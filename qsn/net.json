@@ -1,0 +1,25 @@
+{
+  "nodes": [
+    {
+      "name": "Agg A",
+      "type": "QuantumRouter",
+      "seed": 0,
+      "memo_size": 50
+    },
+    {
+      "name": "node2",
+      "type": "QuantumRouter",
+      "memo_size": 50,
+      "seed": 1
+    }
+  ],
+  "qconnections": [
+    {
+      "node1": "node1",
+      "node2": "node2",
+      "attenuation": 0.0002,
+      "distance": 500,
+      "type": "meet_in_the_middle"
+    }
+  ]
+}
