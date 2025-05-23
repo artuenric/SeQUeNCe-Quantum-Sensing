@@ -1,5 +1,5 @@
 from sequence.kernel.timeline import Timeline
-from aggregator import AggregatorNode
+from dump.aggregator import AggregatorNode
 
 # Não consigo saber o quão necessário é cada coisa que eu faço aqui.
 

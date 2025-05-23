@@ -7,7 +7,7 @@ from sequence.message import Message
 
 
 class SimpleManager:
-    def __init__(self, owner, memo_name):
+    def __init__(self, owner, memo_name):        
         self.owner = owner
         self.memo_name = memo_name
         self.raw_counter = 0
@@ -59,9 +59,9 @@ def pair_protocol(node1: Node, node2: Node):
 
 tl = Timeline()
 
-node1 = EntangleGenNode('node1', tl)
+node1 = EntangleGenNode('xxx', tl)
 node2 = EntangleGenNode('node2', tl)
-bsm_node = BSMNode('bsm_node', tl, ['node1', 'node2'])
+bsm_node = BSMNode('bsm_node', tl, ['xxx', 'node2'])
 node1.set_seed(0)
 node2.set_seed(1)
 bsm_node.set_seed(2)
@@ -74,6 +74,12 @@ qc2 = QuantumChannel('qc2', tl, attenuation=0, distance=1000)
 qc1.set_ends(node1, bsm_node.name)
 qc2.set_ends(node2, bsm_node.name)
 
+print(f"Canais quanticos do nó 1:")
+print(node1.qchannels)
+print(f"Canais quanticos do nó 2:")
+print(node2.qchannels)
+
+
 nodes = [node1, node2, bsm_node]
 
 for i in range(3):
@@ -83,10 +89,11 @@ for i in range(3):
             cc.set_ends(nodes[i], nodes[j].name)
 
 tl.init()
+
 for i in range(1000):
     tl.time = tl.now() + 1e11
     node1.resource_manager.create_protocol('bsm_node', 'node2')
-    node2.resource_manager.create_protocol('bsm_node', 'node1')
+    node2.resource_manager.create_protocol('bsm_node', 'xxx')
     pair_protocol(node1, node2)
 
     memory1 = node1.get_components_by_type("Memory")[0]
