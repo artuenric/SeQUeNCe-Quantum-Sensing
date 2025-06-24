@@ -1,25 +1,100 @@
 {
   "nodes": [
     {
-      "name": "Agg A",
+      "name": "Hub1",
       "type": "QuantumRouter",
-      "seed": 0,
-      "memo_size": 50
+      "seed": 1,
+      "memo_size": 100
     },
     {
-      "name": "node2",
+      "name": "Hub2",
       "type": "QuantumRouter",
-      "memo_size": 50,
-      "seed": 1
+      "seed": 2,
+      "memo_size": 100
+    },
+    {
+      "name": "Sensor1H1",
+      "type": "QuantumRouter",
+      "seed": 3,
+      "memo_size": 20
+    },
+    {
+      "name": "Sensor2H1",
+      "type": "QuantumRouter",
+      "seed": 4,
+      "memo_size": 20
+    },
+    {
+      "name": "Sensor1H2",
+      "type": "QuantumRouter",
+      "seed": 5,
+      "memo_size": 20
+    },
+    {
+      "name": "Sensor2H2",
+      "type": "QuantumRouter",
+      "seed": 6,
+      "memo_size": 20
     }
   ],
   "qconnections": [
     {
-      "node1": "node1",
-      "node2": "node2",
+      "node1": "Sensor1H1",
+      "node2": "Hub1",
       "attenuation": 0.0002,
-      "distance": 500,
+      "distance": 10,
+      "type": "meet_in_the_middle"
+    },
+    {
+      "node1": "Sensor2H1",
+      "node2": "Hub1",
+      "attenuation": 0.0002,
+      "distance": 10,
+      "type": "meet_in_the_middle"
+    },
+    {
+      "node1": "Sensor1H2",
+      "node2": "Hub2",
+      "attenuation": 0.0002,
+      "distance": 10,
+      "type": "meet_in_the_middle"
+    },
+    {
+      "node1": "Sensor2H2",
+      "node2": "Hub2",
+      "attenuation": 0.0002,
+      "distance": 10,
+      "type": "meet_in_the_middle"
+    },
+    {
+      "node1": "Hub1",
+      "node2": "Hub2",
+      "attenuation": 0.0002,
+      "distance": 50,
       "type": "meet_in_the_middle"
     }
-  ]
+  ],
+  "cconnections": [
+    { "node1": "Sensor1H1", "node2": "Hub1", "delay": 100000000 },
+    { "node1": "Sensor2H1", "node2": "Hub1", "delay": 100000000 },
+    { "node1": "Sensor1H2", "node2": "Hub2", "delay": 100000000 },
+    { "node1": "Sensor2H2", "node2": "Hub2", "delay": 100000000 },
+    { "node1": "Hub1",      "node2": "Hub2", "delay": 500000000 },
+    
+    { "node1": "Sensor1H1", "node2": "Sensor2H1", "delay": 100000000 },
+    { "node1": "Sensor1H1", "node2": "Hub2",      "delay": 600000000 },
+    { "node1": "Sensor1H1", "node2": "Sensor1H2", "delay": 600000000 },
+    { "node1": "Sensor1H1", "node2": "Sensor2H2", "delay": 600000000 },
+    
+    { "node1": "Sensor2H1", "node2": "Hub2",      "delay": 600000000 },
+    { "node1": "Sensor2H1", "node2": "Sensor1H2", "delay": 600000000 },
+    { "node1": "Sensor2H1", "node2": "Sensor2H2", "delay": 600000000 },
+    
+    { "node1": "Sensor1H2", "node2": "Hub1",      "delay": 600000000 },
+    { "node1": "Sensor1H2", "node2": "Sensor2H2", "delay": 100000000 },
+    
+    { "node1": "Sensor2H2", "node2": "Hub1",      "delay": 600000000 }
+  ],
+  "stop_time": 4e12,
+  "is_parallel": false
 }
