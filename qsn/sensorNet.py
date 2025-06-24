@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # Nós de início e fim da requisição.
     # Escolhemos dois sensores em hubs diferentes para testar o swapping.
     start_node_name = "Sensor1H1"
-    end_node_name = "Hub2"
+    end_node_name = "Sensor2H2"
     
     node1 = None
     node2 = None
