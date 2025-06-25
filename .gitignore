@@ -1,0 +1,63 @@
+# Ignora a pasta de ambiente virtual
+.venv/
+
+# Ignora as pastas de cache do Python
+__pycache__/
+
+# Ambientes Virtuais
+# Ignora pastas de ambientes virtuais para não versionar pacotes instalados.
+# --------------------------------------------------------------------------
+.venv/
+venv/
+env/
+.env/
+
+
+# Cache e Bytecode do Python
+# Arquivos gerados automaticamente pelo interpretador Python.
+# --------------------------------------------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+
+# Arquivos de Build e Distribuição
+# Gerados ao empacotar seu projeto para distribuição (PyPI).
+# --------------------------------------------------------------------------
+build/
+dist/
+*.egg-info/
+sdist/
+*.egg
+*.whl
+
+
+# Arquivos de IDEs e Editores
+# Configurações específicas do seu editor que não devem ser compartilhadas.
+# --------------------------------------------------------------------------
+.vscode/
+.idea/
+
+
+# Arquivos de Testes e Cobertura de Código
+# Caches e relatórios gerados por ferramentas como pytest e coverage.
+# --------------------------------------------------------------------------
+.pytest_cache/
+.tox/
+htmlcov/
+.coverage
+
+
+# Arquivos de Sistema Operacional
+# Metadados de sistema que não têm a ver com o projeto.
+# --------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+
+# Arquivos de Segredos e Configurações Locais
+# NUNCA versione senhas, tokens de API ou chaves secretas!
+# --------------------------------------------------------------------------
+.env
+local_settings.py
