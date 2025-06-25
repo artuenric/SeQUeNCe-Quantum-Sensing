@@ -1,19 +1,19 @@
-import json
 import logging
 from sequence.topology.router_net_topo import RouterNetTopo
+from hubApp import HubApp  # Passo 1: Importar a nossa nova aplicação
 
 # Configura o logging para salvar a saída em um arquivo.
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    filename="sensorNet.txt",
-    filemode="w" 
+    filename="sensor_network.txt",
+    filemode="w"
 )
 
 def set_parameters(topology: RouterNetTopo):
     """
     Função para configurar os parâmetros dos componentes da rede.
-    Baseado nos exemplos do repositório.
+    (Sem alterações aqui)
     """
     # Parâmetros das memórias quânticas
     MEMO_FREQ = 2e3
@@ -35,14 +35,12 @@ def set_parameters(topology: RouterNetTopo):
         node.network_manager.protocol_stack[1].set_swapping_degradation(SWAP_DEGRADATION)
 
     # Parâmetros dos canais quânticos
-    ATTENUATION = 1e-5 # atenuação em dB/km
-    QC_FREQ = 1e11
+    # Aumentamos a atenuação para tornar o cenário um pouco mais realista
+    ATTENUATION = 0.0002
     for qc in topology.get_qchannels():
         qc.attenuation = ATTENUATION
-        qc.frequency = QC_FREQ
 
 if __name__ == "__main__":
-    # Carrega a topologia a partir do arquivo JSON que criamos
     network_config_file = "qsn/net.json"
 
     print("Carregando a topologia do arquivo:", network_config_file)
@@ -52,38 +50,43 @@ if __name__ == "__main__":
     print("Configurando os parâmetros da simulação...")
     set_parameters(network_topo)
 
-    # Nós de início e fim da requisição.
-    # Escolhemos dois sensores em hubs diferentes para testar o swapping.
-    start_node_name = "Sensor1H1"
-    end_node_name = "Sensor2H2"
+    # Passo 2: Encontrar e separar os nós por tipo (Hubs e Sensores)
+    all_nodes = network_topo.get_nodes_by_type(RouterNetTopo.QUANTUM_ROUTER)
+    hubs = {node.name: node for node in all_nodes if "Hub" in node.name}
+    sensors = {node.name: node for node in all_nodes if "Sensor" in node.name}
+
+    # Passo 3: Instalar a aplicação nos Hubs
+    print("Instalando a HubApp nos hubs...")
+    hub1_sensors = ["Sensor1H1", "Sensor2H1"]
+    hub2_sensors = ["Sensor1H2", "Sensor2H2"]
+
+    app_hub1 = HubApp(hubs["Hub1"], hub1_sensors)
+    hubs["Hub1"].set_app(app_hub1)
     
-    node1 = None
-    node2 = None
-
-    for router in network_topo.get_nodes_by_type(RouterNetTopo.QUANTUM_ROUTER):
-        if router.name == start_node_name:
-            node1 = router
-        elif router.name == end_node_name:
-            node2 = router
-            
-    if not node1 or not node2:
-        raise Exception("Nós de início ou fim não encontrados na topologia.")
-
-    print(f"Iniciando requisição de emaranhamento entre '{start_node_name}' e '{end_node_name}'...")
+    app_hub2 = HubApp(hubs["Hub2"], hub2_sensors)
+    hubs["Hub2"].set_app(app_hub2)
     
-    nm = node1.network_manager
-    # Parâmetros da requisição: (nó_destino, tempo_inicio, tempo_fim, tamanho_memoria, fidelidade_alvo)
-    nm.request(end_node_name, 1e12, 10e12, 10, 0.8)
+    # Passo 4: Fazer com que cada sensor inicie uma requisição para o seu hub
+    print("Iniciando as requisições de emaranhamento dos sensores para os hubs...")
+    # Tempo de início das requisições
+    start_time = 1e12
+    end_time = 10e12
+    
+    for sensor_name, sensor_node in sensors.items():
+        # Determina a qual hub o sensor deve se conectar
+        target_hub = "Hub1" if "H1" in sensor_name else "Hub2"
+        
+        nm = sensor_node.network_manager
+        # Parâmetros: (nó_destino, tempo_inicio, tempo_fim, tamanho_memoria, fidelidade_alvo)
+        nm.request(target_hub, start_time, end_time, 1, 0.8)
+        print(f"Sensor '{sensor_name}' solicitou emaranhamento com '{target_hub}'.")
 
-    print("Iniciando a simulação...")
+    # Passo 5: Rodar a simulação
+    print("\nIniciando a simulação...")
     tl.init()
+    # Não precisamos mais chamar app.start() pois a app é passiva
     tl.run()
     print("Simulação concluída.")
 
-    print("\n---------- Resultados ----------")
-    print(f"Memórias do nó inicial ({start_node_name}):")
-    print("Índice:\tNó Emaranhado:\tFidelidade:\tEstado:")
-    
-    for info in node1.resource_manager.memory_manager:
-        if info.state == "ENTANGLED":
-            print("{:6}\t{:18}\t{:10.4f}\t{}".format(info.index, info.remote_node, info.fidelity, info.state))
+    print("\nVerifique o arquivo 'sensor_network.log' para ver os detalhes da execução, "
+          "incluindo a criação do estado GHZ nos hubs.")
