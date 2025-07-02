@@ -1,10 +1,9 @@
 import logging
 from sequence.components.circuit import Circuit
 
-# Pega o logger configurado no script principal
 logger = logging.getLogger(__name__)
 
-class HubApp:
+class PassiveHubGHZGenApp:
     def __init__(self, node, sensors_to_monitor: list):
         """
         Construtor da aplicação do Hub.
@@ -55,10 +54,8 @@ class HubApp:
 
         logger.info(f"{self.node.name}: Medição conjunta simulada com sucesso.")
         
-        # Correção Definitiva: Passar os argumentos corretos para o método update.
         for info in memory_infos:
             # Argumento 1: None (não temos um protocolo formal)
-            # Argumento 2: info.memory (o objeto Memory, como exige a docstring)
             self.node.resource_manager.update(None, info.memory, "RAW")
         
         logger.info(f"{self.node.name}: Memórias { [info.index for info in memory_infos] } liberadas.")
@@ -67,6 +64,7 @@ class HubApp:
         self.entangled_sensors = {}
 
     def start(self):
+        # O método start não contém lógica, uma vez que a app é passiva
         pass
 
     def get_other_reservation(self, reservation):

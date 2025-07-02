@@ -1,6 +1,6 @@
 import logging
 from sequence.topology.router_net_topo import RouterNetTopo
-from hubApp import HubApp  # Passo 1: Importar a nossa nova aplicação
+from app import PassiveHubGHZGenApp
 
 # Configura o logging para salvar a saída em um arquivo.
 logging.basicConfig(
@@ -60,10 +60,10 @@ if __name__ == "__main__":
     hub1_sensors = ["Sensor1H1", "Sensor2H1"]
     hub2_sensors = ["Sensor1H2", "Sensor2H2"]
 
-    app_hub1 = HubApp(hubs["Hub1"], hub1_sensors)
+    app_hub1 = PassiveHubGHZGenApp(hubs["Hub1"], hub1_sensors)
     hubs["Hub1"].set_app(app_hub1)
     
-    app_hub2 = HubApp(hubs["Hub2"], hub2_sensors)
+    app_hub2 = PassiveHubGHZGenApp(hubs["Hub2"], hub2_sensors)
     hubs["Hub2"].set_app(app_hub2)
     
     # Passo 4: Fazer com que cada sensor inicie uma requisição para o seu hub
