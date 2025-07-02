@@ -3,7 +3,11 @@ from sequence.components.circuit import Circuit
 
 logger = logging.getLogger(__name__)
 
-class PassiveHubGHZGenApp:
+class GHZHandlerApp:
+    """
+    Uma aplicação passiva para o Hub.
+    Esta aplicação aguarda passivamente o emaranhamento de sensores e, quando todos os sensores estão conectados, cria o circuito GHZ.
+    """
     def __init__(self, node, sensors_to_monitor: list):
         """
         Construtor da aplicação do Hub.
@@ -65,7 +69,4 @@ class PassiveHubGHZGenApp:
 
     def start(self):
         # O método start não contém lógica, uma vez que a app é passiva
-        pass
-
-    def get_other_reservation(self, reservation):
         pass
