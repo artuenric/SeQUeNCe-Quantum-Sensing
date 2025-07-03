@@ -1,16 +1,8 @@
-import logging
+from config import setup_logger
 from sequence.topology.router_net_topo import RouterNetTopo
-
-# Importa as nossas novas aplicações dos pacotes que você criou
 from app import GHZRequestApp
 from app import EntanglamentResponderApp
-
-# Configura o logging
-logging.basicConfig(level=logging.INFO,
-                    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-                    filename="active_network.txt",
-                    filemode="w")
-
+    
 def set_parameters(topology: RouterNetTopo):
     """Função para configurar os parâmetros da rede (idêntica à anterior)."""
 
@@ -46,6 +38,12 @@ if __name__ == "__main__":
     network_topo = RouterNetTopo(network_config_file)
     tl = network_topo.get_timeline()
 
+    # Configura o logger para a simulação
+    print("Configurando o logger para a simulação...")
+    log_file_name = "sensor_active_network"
+    setup_logger(tl, log_file_name, mode='custom')
+
+    
     print("Configurando os parâmetros da simulação...")
     set_parameters(network_topo)
 

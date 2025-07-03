@@ -1,9 +1,7 @@
-import logging
+from sequence.utils import log
 from sequence.protocol import Protocol
 from sequence.components.circuit import Circuit
 from sequence.network_management.reservation import Reservation 
-
-logger = logging.getLogger(__name__)
 
 class GHZRequestApp(Protocol):
     """Uma aplicação 'ativa' para o Hub.
@@ -29,7 +27,7 @@ class GHZRequestApp(Protocol):
         """
         Inicia o processo, enviando requisições de emaranhamento para todos os sensores.
         """
-        logger.info(f"{self.owner.name} app starting active entanglement process.")
+        log.logger.info(f"{self.owner.name} app starting active entanglement process.")
         for sensor_name in self.sensors_to_monitor:
             # O NetworkManager do Hub solicita o emaranhamento
             self.owner.network_manager.request(
@@ -39,7 +37,7 @@ class GHZRequestApp(Protocol):
                 memory_size=1,
                 target_fidelity=0.8
             )
-            logger.info(f"{self.owner.name} app requested entanglement with {sensor_name}.")
+            log.logger.info(f"{self.owner.name} app requested entanglement with {sensor_name}.")
 
     def get_memory(self, info):
         """
@@ -47,12 +45,12 @@ class GHZRequestApp(Protocol):
         A lógica aqui é idêntica à da aplicação passiva.
         """
         if info.state == "ENTANGLED" and info.remote_node in self.sensors_to_monitor:
-            logger.info(f"{self.owner.name} app successfully entangled with {info.remote_node}.")
+            log.logger.info(f"{self.owner.name} app successfully entangled with {info.remote_node}.")
             
             self.entangled_sensors[info.remote_node] = info
             
             if len(self.entangled_sensors) == len(self.sensors_to_monitor):
-                logger.info(f"{self.owner.name} app detected all sensors connected. "
+                log.logger.info(f"{self.owner.name} app detected all sensors connected. "
                             "Initiating joint measurement.")
                 self.simulate_joint_measurement()
 
@@ -74,15 +72,15 @@ class GHZRequestApp(Protocol):
         
         qstate_keys = [info.memory.qstate_key for info in memory_infos]
         
-        logger.info(f"{self.owner.name} app executing GHZ circuit on state keys {qstate_keys}.")
+        log.logger.info(f"{self.owner.name} app executing GHZ circuit on state keys {qstate_keys}.")
 
         self.owner.timeline.quantum_manager.run_circuit(ghz_circuit, qstate_keys)
-        logger.info(f"{self.owner.name} app joint measurement simulated successfully.")
+        log.logger.info(f"{self.owner.name} app joint measurement simulated successfully.")
         
         for info in memory_infos:
             self.owner.resource_manager.update(None, info.memory, "RAW")
         
-        logger.info(f"{self.owner.name} app freed memories: {[info.index for info in memory_infos]}.")
+        log.logger.info(f"{self.owner.name} app freed memories: {[info.index for info in memory_infos]}.")
         self.entangled_sensors = {}
 
     # Métodos obrigatórios mas não utilizados
@@ -96,9 +94,9 @@ class GHZRequestApp(Protocol):
         Callback para receber o resultado de uma solicitação de reserva.
         """
         if result:
-            logger.info(f"Reservation for {reservation.responder} approved on node {self.owner.name}")
+            log.logger.info(f"Reservation for {reservation.responder} approved on node {self.owner.name}")
         else:
-            logger.warning(f"Reservation for {reservation.responder} failed on node {self.owner.name}")
+            log.logger.info(f"Reservation for {reservation.responder} failed on node {self.owner.name}")
             # FUTURAMENTE: aqui poderíamos implementar uma lógica de retentativa ou
             # decidir prosseguir com um estado GHZ com menos qubits.
     

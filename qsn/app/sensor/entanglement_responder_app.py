@@ -1,11 +1,7 @@
-import logging
-# Corrigido: Herdar de EntanglementProtocol que é mais específico
+from sequence.utils import log
 from sequence.protocol import Protocol
 from sequence.message import Message
 
-logger = logging.getLogger(__name__)
-
-# Corrigido: Herdar da classe correta
 class EntanglamentResponderApp(Protocol):
     """Uma aplicação/protocolo para nós sensores.
     Reage a solicitações de emaranhamento de um hub.
@@ -14,12 +10,12 @@ class EntanglamentResponderApp(Protocol):
         super().__init__(owner, name)
 
     def get_other_reservation(self, reservation):
-        logger.info(f"{self.owner.name} app received reservation request from {reservation.initiator}")
+        log.logger.info(f"{self.owner.name} app received reservation request from {reservation.initiator}")
         pass
 
     def get_memory(self, info):
         if info.state == "ENTANGLED":
-            logger.info(f"{self.owner.name} app successfully entangled with {info.remote_node}")
+            log.logger.info(f"{self.owner.name} app successfully entangled with {info.remote_node}")
 
     def start(self):
         pass
