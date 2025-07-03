@@ -18,7 +18,6 @@ def setup_logger(timeline, log_file_name: str, mode: str = 'custom'):
                     'verbose' para registrar tudo.
     """
     log_file_name += ".txt"
-    print(f"Configurando logger para o modo: '{mode}'")
 
     if mode == 'verbose':
         # MODO VERBOSO: Usa o logger padrão do Python para capturar tudo.
@@ -28,7 +27,6 @@ def setup_logger(timeline, log_file_name: str, mode: str = 'custom'):
             filename=log_file_name,
             filemode="w"
         )
-        print(f"Todos os logs serão salvos em '{log_file_name}'.")
 
     elif mode == 'custom':
         # MODO CUSTOMIZADO: Usa o logger do SeQUeNCe com nosso filtro.
@@ -38,8 +36,6 @@ def setup_logger(timeline, log_file_name: str, mode: str = 'custom'):
         # Simplesmente usamos a lista que importamos. Sem ler arquivos!
         for module_name in TRACKED_MODULES:
             seq_log.track_module(module_name)
-        
-        print(f"Apenas os módulos {TRACKED_MODULES} serão rastreados em '{log_file_name}'.")
 
     else:
         raise ValueError(f"Modo de log '{mode}' desconhecido. Use 'custom' ou 'verbose'.")
