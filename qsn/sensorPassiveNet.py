@@ -1,14 +1,6 @@
-import logging
+from config import setup_logger
 from sequence.topology.router_net_topo import RouterNetTopo
-from hubApp import HubApp  # Passo 1: Importar a nossa nova aplicação
-
-# Configura o logging para salvar a saída em um arquivo.
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    filename="sensor_network.txt",
-    filemode="w"
-)
+from app import GHZHandlerApp
 
 def set_parameters(topology: RouterNetTopo):
     """
@@ -47,6 +39,10 @@ if __name__ == "__main__":
     network_topo = RouterNetTopo(network_config_file)
     tl = network_topo.get_timeline()
 
+    print("Configurando o logger para a simulação...")
+    log_file_name = "sensor_passive_network"
+    setup_logger(tl, log_file_name, mode='custom')
+    
     print("Configurando os parâmetros da simulação...")
     set_parameters(network_topo)
 
@@ -60,10 +56,10 @@ if __name__ == "__main__":
     hub1_sensors = ["Sensor1H1", "Sensor2H1"]
     hub2_sensors = ["Sensor1H2", "Sensor2H2"]
 
-    app_hub1 = HubApp(hubs["Hub1"], hub1_sensors)
+    app_hub1 = GHZHandlerApp(hubs["Hub1"], hub1_sensors)
     hubs["Hub1"].set_app(app_hub1)
     
-    app_hub2 = HubApp(hubs["Hub2"], hub2_sensors)
+    app_hub2 = GHZHandlerApp(hubs["Hub2"], hub2_sensors)
     hubs["Hub2"].set_app(app_hub2)
     
     # Passo 4: Fazer com que cada sensor inicie uma requisição para o seu hub
@@ -88,5 +84,5 @@ if __name__ == "__main__":
     tl.run()
     print("Simulação concluída.")
 
-    print("\nVerifique o arquivo 'sensor_network.log' para ver os detalhes da execução, "
+    print(f"\nVerifique o arquivo '{log_file_name}' para ver os detalhes da execução, "
           "incluindo a criação do estado GHZ nos hubs.")
