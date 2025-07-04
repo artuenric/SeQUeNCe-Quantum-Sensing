@@ -1,0 +1,27 @@
+---- em entanglement_responder: ----
+atualmente, o node percebe que tem um hub por meio de um método que roda os canais clássicos. mas, um broadcast pra identificar o hub, podia ser uma boa.
+
+---- em ghz_request_app e entanglement_responder: ----
+enum nas mensagens entre as apps pra garantir o padrão.
+
+---- em ghz_request_app:----
+ao saber que sensor x falhou, o hub deve decidir o que ele faz, nesse caso, a gente tem que implementar mais lógica em get_reservation_result:
+# Aqui, o Hub sabe que o Sensor X falhou. Ele pode tomar uma decisão:
+    # 1. Abortar tudo.
+    # 2. Prosseguir com um estado GHZ com menos qubits.
+    # 3. (FUTURO) Enviar uma mensagem para o Sensor pedindo o dado clássico.
+    # Por enquanto, apenas registramos e removemos da lista de pendentes.
+
+ao receber uma mensagem clássica do responder
+    # Aqui, podemos também checar se já temos todos os resultados
+    # (quânticos e clássicos) para prosseguir.
+    # Deixaremos essa lógica mais complexa para depois.
+
+criar a parte lógica envolvendo a falha do entrelaçamento entre hub e sensor
+há duas falhas possíveis:
+- falha na reserva: não tem memória quântica livre, ou algo assim. a request é rejeitada na camada de rede. para consultá-la, tem que utilizar o get_reservation_result(result=False).
+- falha no emaranhamento: o protocolo falha, por motivos de baixa qualidade do canal, por exemplo. aqui a reserva já foi feita.
+nas duas devo fazer com que o sensor envie a resposta clássica.
+
+fazer a memória expirar para controle de quando os entrelaçamentos falham
+por meio do método memory_expire, isso vai adicionar alguma lógica de decisão para o hub
