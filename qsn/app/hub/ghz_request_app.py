@@ -1,7 +1,8 @@
 from sequence.utils import log
 from sequence.protocol import Protocol
 from sequence.components.circuit import Circuit
-from sequence.network_management.reservation import Reservation 
+from sequence.network_management.reservation import Reservation
+from sequence.message import Message
 
 class GHZRequestApp(Protocol):
     """Uma aplicação 'ativa' para o Hub.
@@ -22,6 +23,9 @@ class GHZRequestApp(Protocol):
         self.entangled_sensors = {}  # Dicionário para rastrear o sucesso
         self.start_time = start_time
         self.end_time = end_time
+        
+        self.entangled_sensors = {}  # Dicionário para armazenar sensores emaranhados
+        self.pending_sensors = sensors_to_monitor.copy()  # Sensores que ainda não foram emaranhados
 
     def start(self):
         """
@@ -41,47 +45,54 @@ class GHZRequestApp(Protocol):
 
     def get_memory(self, info):
         """
-        Callback para quando uma memória muda de estado.
-        A lógica aqui é idêntica à da aplicação passiva.
+        Callback para quando uma memória muda de estado. A lógica aqui é idêntica à da aplicação passiva.
         """
         if info.state == "ENTANGLED" and info.remote_node in self.sensors_to_monitor:
             log.logger.info(f"{self.owner.name} app successfully entangled with {info.remote_node}.")
             
+            # Armazena o sucesso do emaranhamento e remove o sensor da lista pendente
             self.entangled_sensors[info.remote_node] = info
+            self.pending_sensors.remove(info.remote_node)
             
-            if len(self.entangled_sensors) == len(self.sensors_to_monitor):
-                log.logger.info(f"{self.owner.name} app detected all sensors connected. "
-                            "Initiating joint measurement.")
+            # Sucesso ou falha
+            if not self.pending_sensors:
+                log.logger.info(f"All pending reservations resolved. Initiating joint measurement.")
                 self.simulate_joint_measurement()
 
     def simulate_joint_measurement(self):
-        """
-        Aplica o circuito GHZ.
-        A lógica aqui é idêntica à da aplicação passiva.
-        """
-        memory_infos = list(self.entangled_sensors.values())
+        """Aplica o circuito GHZ apenas nos sensores que se emaranharam com sucesso."""
         
-        if len(memory_infos) < 2:
+        # Medida de segurança: se nenhum sensor se emaranhou, não faz nada.
+        if not self.entangled_sensors:
+            log.logger.warning(f"No entangled memories available to perform measurement. Aborting.")
             return
 
+        memory_infos = list(self.entangled_sensors.values())
+        qstate_keys = [info.memory.qstate_key for info in memory_infos]
         num_qubits = len(memory_infos)
         ghz_circuit = Circuit(num_qubits)
+        
+        log.logger.info(f"Performing joint measurement on {num_qubits} sensors: {list(self.entangled_sensors.keys())}")
+
         ghz_circuit.h(0)
         for i in range(num_qubits - 1):
             ghz_circuit.cx(i, i + 1)
-        
-        qstate_keys = [info.memory.qstate_key for info in memory_infos]
-        
-        log.logger.info(f"{self.owner.name} app executing GHZ circuit on state keys {qstate_keys}.")
+        for i in range(num_qubits):
+            ghz_circuit.measure(i)
 
-        self.owner.timeline.quantum_manager.run_circuit(ghz_circuit, qstate_keys)
-        log.logger.info(f"{self.owner.name} app joint measurement simulated successfully.")
+        measurement_results = self.owner.timeline.quantum_manager.run_circuit(
+            circuit=ghz_circuit,
+            keys=qstate_keys,
+            meas_samp=self.owner.get_generator().random()
+        )
+
+        log.logger.info(f"Classical measurement result: {measurement_results}")
         
         for info in memory_infos:
             self.owner.resource_manager.update(None, info.memory, "RAW")
         
-        log.logger.info(f"{self.owner.name} app freed memories: {[info.index for info in memory_infos]}.")
-        self.entangled_sensors = {}
+        log.logger.info(f"app freed memories: {[info.index for info in memory_infos]}.")
+        self.entangled_sensors.clear()
 
     # Métodos obrigatórios mas não utilizados
     def get_other_reservation(self, reservation):
@@ -93,17 +104,45 @@ class GHZRequestApp(Protocol):
         """
         Callback para receber o resultado de uma solicitação de reserva.
         """
+        responder = reservation.responder
+
+        if responder not in self.pending_sensors:
+            return  # Ignora se já tratamos este sensor
+
         if result:
-            log.logger.info(f"Reservation for {reservation.responder} approved on node {self.owner.name}")
+            log.logger.info(f"Reservation for {responder} approved. Waiting for entanglement.")
         else:
-            log.logger.info(f"Reservation for {reservation.responder} failed on node {self.owner.name}")
-            # FUTURAMENTE: aqui poderíamos implementar uma lógica de retentativa ou
-            # decidir prosseguir com um estado GHZ com menos qubits.
+            # LÓGICA DO PLANO B (FALHA NA RESERVA)
+            log.logger.warning(f"Reservation for {responder} has FAILED or EXPIRED.")
+            self.pending_sensors.remove(responder) # Remove da lista de pendentes
+
+            # Verifica se, mesmo com a falha, já podemos prosseguir
+            if not self.pending_sensors:
+                log.logger.info(f"All pending reservations resolved. Initiating joint measurement with available resources.")
+                self.simulate_joint_measurement()
     
-    def received_message(self, src: str, msg):
-        """
-        Método obrigatório pela herança de 'Protocol'.
-        No modelo ativo, o Hub (iniciador) não espera receber
-        mensagens clássicas, então a implementação pode ser vazia.
-        """
-        pass
+    def received_message(self, src: str, msg: Message):
+        """Lida com mensagens recebidas. Especificamente, a mensagem de 'fallback clássico' do sensor."""
+        
+        msg_content = msg.content
+        
+        if msg_content.get("type") == "classical_fallback":
+            bit = msg_content.get("bit")
+            log.logger.warning(self, f"received classical fallback bit {bit} from sensor {src}.")
+            
+            # Armazenamos o resultado clássico (opcional, mas bom para o futuro)
+            self.classical_results[src] = bit
+            
+            # ##############################################################
+            # LÓGICA FALTANTE ADICIONADA AQUI
+            # ##############################################################
+            # Se o sensor que enviou a mensagem ainda estava pendente...
+            if src in self.pending_sensors:
+                # ...nós o removemos da lista de pendentes!
+                self.pending_sensors.remove(src)
+                log.logger.info(self, f"Sensor {src} resolved via classical fallback.")
+                
+                # E agora, verificamos se todos os outros já responderam.
+                if not self.pending_sensors:
+                    log.logger.info(self, f"All pending sensors resolved. Initiating joint measurement with available resources.")
+                    self.simulate_joint_measurement()

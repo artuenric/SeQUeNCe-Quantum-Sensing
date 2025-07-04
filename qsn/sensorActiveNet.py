@@ -17,7 +17,17 @@ def set_parameters(topology: RouterNetTopo):
         memory_array.update_memory_params("coherence_time", MEMO_EXPIRE)
         memory_array.update_memory_params("efficiency", MEMO_EFFICIENCY)
         memory_array.update_memory_params("raw_fidelity", MEMO_FIDELITY)
-
+    
+    # Parâmetros dos detectores dos BSMs
+    DETECTOR_EFFICIENCY = 0.0
+    DETECTOR_COUNT_RATE = 5e7
+    DETECTOR_RESOLUTION = 100
+    for node in topology.get_nodes_by_type(RouterNetTopo.BSM_NODE):
+        bsm = node.get_components_by_type("SingleAtomBSM")[0]
+        bsm.update_detectors_params("efficiency", DETECTOR_EFFICIENCY)
+        bsm.update_detectors_params("count_rate", DETECTOR_COUNT_RATE)
+        bsm.update_detectors_params("time_resolution", DETECTOR_RESOLUTION)
+    
     # Parâmetros dos protocolos de swapping
     SWAP_SUCC_PROB = 0.64
     SWAP_DEGRADATION = 0.99
@@ -37,16 +47,17 @@ if __name__ == "__main__":
     print(f"Carregando a topologia do arquivo: {network_config_file}")
     network_topo = RouterNetTopo(network_config_file)
     tl = network_topo.get_timeline()
+    start_time = 1e12
+    end_time = 10e12
+    tl.stop_time = end_time + 1e12
 
-    # Configura o logger para a simulação
     print("Configurando o logger para a simulação...")
-    log_file_name = "sensor_active_network"
+    log_file_name = "sensor_active_efic0"
     setup_logger(tl, log_file_name, mode='custom')
 
-    
     print("Configurando os parâmetros da simulação...")
     set_parameters(network_topo)
-
+    
     # Encontra e separa os nós por tipo
     all_nodes = network_topo.get_nodes_by_type(RouterNetTopo.QUANTUM_ROUTER)
     hubs = {node.name: node for node in all_nodes if "Hub" in node.name}
@@ -64,10 +75,11 @@ if __name__ == "__main__":
     hub1_sensors = ["Sensor1H1", "Sensor2H1"]
     hub2_sensors = ["Sensor1H2", "Sensor2H2"]
 
-    app_hub1 = GHZRequestApp(hubs["Hub1"], "hub1_app", hub1_sensors)
+    app_hub1 = GHZRequestApp(hubs["Hub1"], "hub1_app", hub1_sensors, start_time
+                             )
     hubs["Hub1"].set_app(app_hub1)
     
-    app_hub2 = GHZRequestApp(hubs["Hub2"], "hub2_app", hub2_sensors)
+    app_hub2 = GHZRequestApp(hubs["Hub2"], "hub2_app", hub2_sensors, start_time, end_time)
     hubs["Hub2"].set_app(app_hub2)
     
     # Inicia a simulação e o processo ATIVO
