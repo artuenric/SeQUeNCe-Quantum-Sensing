@@ -25,6 +25,16 @@ def set_parameters(topology: RouterNetTopo):
         node.network_manager.protocol_stack[1].set_swapping_success_rate(SWAP_SUCC_PROB)
         node.network_manager.protocol_stack[1].set_swapping_degradation(SWAP_DEGRADATION)
 
+    # Parâmetros dos detectores de fótons
+    DETECTOR_EFFICIENCY = 0.0
+    DETECTOR_COUNT_RATE = 5e7
+    DETECTOR_RESOLUTION = 100
+    for node in topology.get_nodes_by_type(RouterNetTopo.BSM_NODE):
+        bsm = node.get_components_by_type("SingleAtomBSM")[0]
+        bsm.update_detectors_params("efficiency", DETECTOR_EFFICIENCY)
+        bsm.update_detectors_params("count_rate", DETECTOR_COUNT_RATE)
+        bsm.update_detectors_params("time_resolution", DETECTOR_RESOLUTION)
+    
     # Parâmetros dos canais quânticos
     ATTENUATION = 0.0002
     for qc in topology.get_qchannels():
