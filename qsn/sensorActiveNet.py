@@ -37,6 +37,8 @@ if __name__ == "__main__":
     print(f"Carregando a topologia do arquivo: {network_config_file}")
     network_topo = RouterNetTopo(network_config_file)
     tl = network_topo.get_timeline()
+    start_time = 1e12
+    end_time = 3e12
 
     # Configura o logger para a simulação
     print("Configurando o logger para a simulação...")
@@ -64,10 +66,10 @@ if __name__ == "__main__":
     hub1_sensors = ["Sensor1H1", "Sensor2H1"]
     hub2_sensors = ["Sensor1H2", "Sensor2H2"]
 
-    app_hub1 = GHZRequestApp(hubs["Hub1"], "hub1_app", hub1_sensors)
+    app_hub1 = GHZRequestApp(hubs["Hub1"], "hub1_app", hub1_sensors, start_time, end_time)
     hubs["Hub1"].set_app(app_hub1)
     
-    app_hub2 = GHZRequestApp(hubs["Hub2"], "hub2_app", hub2_sensors)
+    app_hub2 = GHZRequestApp(hubs["Hub2"], "hub2_app", hub2_sensors, start_time, end_time)
     hubs["Hub2"].set_app(app_hub2)
     
     # Inicia a simulação e o processo ATIVO

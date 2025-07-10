@@ -95,6 +95,6 @@
     
     { "node1": "Sensor2H2", "node2": "Hub1",      "delay": 600000000 }
   ],
-  "stop_time": 4e12,
+  "stop_time": 10e12,
   "is_parallel": false
 }
