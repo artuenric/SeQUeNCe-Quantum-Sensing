@@ -1,48 +1,53 @@
 from enum import Enum, auto
 from sequence.message import Message
 
+
 class GHZMessageType(Enum):
-    """
-    Define os tipos de mensagens para nosso protocolo de criação de estado GHZ.
+    """Defines the message types for the GHZ state creation protocol.
     
-    Attributes:
-        INIT: Mensagem enviada pelo Hub ao Sensor para iniciar o protocolo e informar o prazo final da requisição.
-        PLANB: Mensagem enviada pelo Sensor ao Hub contendo o resultado clássico da medição local (Plano B) após uma falha.
+    The comments indicate the typical direction of communication:
+    - Hub -> Sensor
+    - Sensor -> Hub
     """
-    PROPOSE_GHZ = auto() # Hub -> Sensor
-    ACEPT_GHZ = auto() # Sensor -> Hub
-    REJECT_GHZ = auto() # Sensor -> Hub
-    STATUS_UPDATE = auto() # Sensor -> Hub
-    ATTEMPT_FAILED = auto() # Hub -> Sensor
+    PROPOSE_GHZ = auto()        # Hub -> Sensor
+    ACEPT_GHZ = auto()          # Sensor -> Hub
+    REJECT_GHZ = auto()         # Sensor -> Hub
+    STATUS_UPDATE = auto()      # Sensor -> Hub
+    ATTEMPT_FAILED = auto()     # Hub -> Sensor
     CLASSICAL_FALLBACK = auto() # Sensor -> Hub
     
 
 class GHZMessage(Message):
-    """
-    Mensagem customizada para a comunicação no protocolo GHZ.
+    """Custom message for communication in the GHZ protocol.
+
+    This class populates its attributes based on the message type,
+    allowing for flexible data transfer.
 
     Attributes:
-        msg_type (GHZMessageType): O tipo da mensagem, definido pelo Enum.
-        payload (dict): Um dicionário flexível para carregar os dados
-                        específicos de cada tipo de mensagem (ex: 'end_time', 'result').
+        msg_type (GHZMessageType): The type of the message.
+        receiver (str): The name of the protocol that will receive the message.
+        hub_name (str): The name of the initiating hub node.
+        star_time (int): The start time for the protocol execution.
+        end_time (int): The deadline for the protocol execution.
+        num_memories (int): The number of memories involved.
+        status (any): The status being updated.
+        classical_result (any): The classical measurement result for the fallback plan.
     """
+
     def __init__(self, msg_type: GHZMessageType, receiver: str, **kwargs):
-        """
-        Construtor da GHZMessage.
+        """Constructor for the GHZMessage.
 
         Args:
-            msg_type (GHZMessageType): O tipo da mensagem.
-            receiver (str): O nome do protocolo que vai receber a mensagem.
-            **kwargs: Argumentos chave-valor para compor o payload da mensagem.
-                      Ex: end_time=10e12, result=1.
+            msg_type (GHZMessageType): The type of the message.
+            receiver (str): The name of the protocol that will receive the message.
+            **kwargs: Keyword arguments that compose the message attributes,
+                      e.g., end_time=10e12, hub_name="hub_node".
         """
-        
-    def __init__(self, msg_type: GHZMessageType, receiver: str, **kwargs):
         super().__init__(msg_type, receiver)
 
         if msg_type is GHZMessageType.PROPOSE_GHZ:
             self.hub_name = kwargs.get("hub_name")
-            self.star_time = kwargs.get("start_time")
+            self.start_time = kwargs.get("start_time")
             self.end_time = kwargs.get("end_time")
             self.num_memories = kwargs.get("num_memories")
         elif msg_type is GHZMessageType.STATUS_UPDATE:
