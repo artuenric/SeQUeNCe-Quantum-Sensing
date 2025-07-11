@@ -7,4 +7,5 @@ TRACKED_MODULES = [
     "hub_ghz_active",
     "sensor_ghz_active",
     "message_ghz_active",
+    "sensor_ghz_active_fallback"
 ]

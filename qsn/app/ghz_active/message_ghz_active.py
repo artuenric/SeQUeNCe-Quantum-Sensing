@@ -44,6 +44,7 @@ class GHZMessage(Message):
             self.hub_name = kwargs.get("hub_name")
             self.star_time = kwargs.get("start_time")
             self.end_time = kwargs.get("end_time")
+            self.num_memories = kwargs.get("num_memories")
         elif msg_type is GHZMessageType.STATUS_UPDATE:
             self.status = kwargs.get("status")
         elif msg_type is GHZMessageType.CLASSICAL_FALLBACK:

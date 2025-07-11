@@ -25,7 +25,7 @@ def set_parameters(topology: RouterNetTopo):
         node.network_manager.protocol_stack[1].set_swapping_degradation(SWAP_DEGRADATION)
 
     # Parâmetros dos detectores de fótons
-    DETECTOR_EFFICIENCY = 0.0
+    DETECTOR_EFFICIENCY = 0.9
     DETECTOR_COUNT_RATE = 5e7
     DETECTOR_RESOLUTION = 100
     for node in topology.get_nodes_by_type(RouterNetTopo.BSM_NODE):
@@ -68,31 +68,21 @@ if __name__ == "__main__":
     hub1_sensors = ["Sensor1H1", "Sensor2H1"]
     hub2_sensors = ["Sensor1H2", "Sensor2H2"]
     
-    # Instala a SensorGenEntanglementApp em todos os sensores
-    for sensor_name in hub1_sensors:
-        print(f"Instalando aplicação no sensor: {sensor_name}")
-        sensor = sensors.get(sensor_name)
-        print(f"Sensor encontrado: {sensor.name}")
-        app_sensor = EntanglamentResponderApp(sensor)
-        sensor.set_app(app_sensor)
-        sensor.app.set_hub_name(hubs["Hub1"].name)
-        print(f"Aplicação instalada no sensor: {sensor.app.name}") 
+    sensor1h1 = sensors.get("Sensor1H1")
+    app_sensor1h1 = EntanglamentResponderApp(sensor1h1)
+    sensor1h1.set_app(app_sensor1h1)
+    sensor2h1 = sensors.get("Sensor2H1")
+    app_sensor2h1 = EntanglamentResponderApp(sensor2h1)
+    sensor2h1.set_app(app_sensor2h1)
     
-    for sensor_name in hub2_sensors:
-        print(f"Instalando aplicação no sensor: {sensor_name}")
-        sensor = sensors.get(sensor_name)
-        print(f"Sensor encontrado: {sensor.name}")
-        app_sensor = EntanglamentResponderApp(sensor)
-        sensor.set_app(app_sensor)
-        sensor.app.set_hub_name(hubs["Hub2"].name)
-        print(f"Aplicação instalada no sensor: {sensor.app.name}")
-
-    app_hub1 = GHZRequestApp(hubs["Hub1"], hub1_sensors, start_time, end_time)
+    print("Instalando aplicações nos sensores...")
+    app_hub1 = GHZRequestApp(hubs.get("Hub1"), hub1_sensors, start_time, end_time)
     hubs["Hub1"].set_app(app_hub1)
     print(f"Aplicação instalada no hub: {hubs['Hub1'].app.name}")
     
-    app_hub2 = GHZRequestApp(hubs["Hub2"], hub2_sensors, start_time, end_time)
+    app_hub2 = GHZRequestApp(hubs.get("Hub2"), hub2_sensors, start_time, end_time)
     hubs["Hub2"].set_app(app_hub2)
+    print(f"Aplicação instalada no hub: {hubs['Hub2'].app.name}")
     
     # Inicia a simulação e o processo ATIVO
     print("\nIniciando a simulação...")

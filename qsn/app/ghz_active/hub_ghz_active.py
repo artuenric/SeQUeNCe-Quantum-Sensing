@@ -22,7 +22,11 @@ class GHZRequestApp(Protocol):
         super().__init__(owner, name)
         self.owner.protocols.append(self)
         self.sensors_to_monitor = sensors_to_monitor
-        self.entangled_sensors = {} 
+        print(self.owner, sensors_to_monitor)
+        self.memories_by_sensor = {}
+        self.min_entangled_sensors = len(sensors_to_monitor)//2
+        self.min_entangled_memories = 1
+        self.memory_size = 1
         self.start_time = start_time
         self.end_time = end_time
 
@@ -48,58 +52,74 @@ class GHZRequestApp(Protocol):
             sensor_name,
             start_time=self.start_time,
             end_time=self.end_time,
-            memory_size=1,
+            memory_size=self.memory_size,
             target_fidelity=0.8
         )
         log.logger.info(f"{self.owner.name} app requested entanglement with {sensor_name}.")
 
     def get_memory(self, info):
-        """
-        Callback para quando uma memória muda de estado.
-        A lógica aqui é idêntica à da aplicação passiva.
-        """
-        if info.state == "ENTANGLED" and info.remote_node in self.sensors_to_monitor:
-            log.logger.info(f"{self.owner.name} app successfully entangled with {info.remote_node}.")
-            
-            self.entangled_sensors[info.remote_node] = info
-            
-            if len(self.entangled_sensors) == len(self.sensors_to_monitor):
-                log.logger.info(f"{self.owner.name} app detected all sensors connected. Initiating joint measurement.")
-                self.simulate_joint_measurement()
-
+        if info.state == "ENTANGLED":
+            self.to_register_memories(info.remote_node, info.state)
+            log.logger.info(f"{self.owner.name} app registered entangled memory from {info.remote_node}.")
+        if self.owner.timeline.now() >= self.end_time:
+            self.should_process_joint_measurement()
+                
+        
     def simulate_joint_measurement(self):
         """
         Aplica o circuito GHZ.
         A lógica aqui é idêntica à da aplicação passiva.
         """
-        memory_infos = list(self.entangled_sensors.values())
-        
-        if len(memory_infos) < 2:
-            return
-
-        num_qubits = len(memory_infos)
-        ghz_circuit = Circuit(num_qubits)
-        ghz_circuit.h(0)
-        for i in range(num_qubits - 1):
-            ghz_circuit.cx(i, i + 1)
-        
-        qstate_keys = [info.memory.qstate_key for info in memory_infos]
-        
-        log.logger.info(f"{self.owner.name} app executing GHZ circuit on state keys {qstate_keys}.")
-
-        self.owner.timeline.quantum_manager.run_circuit(ghz_circuit, qstate_keys)
         log.logger.info(f"{self.owner.name} app joint measurement simulated successfully.")
         
-    def finish(self):
-        log.logger.info(f"{self.owner.name} app finishing and freeing entangled memories.")
-        memory_infos = list(self.entangled_sensors.values())
-        for info in memory_infos:
-            self.owner.resource_manager.update(None, info.memory, "RAW")
+    
+    def should_process_joint_measurement(self):
+        count_able_to_joint_measure = 0
+        if len(self.memories_by_sensor.keys()) == len(self.sensors_to_monitor):
+            for sensor in self.memories_by_sensor.keys():
+                if self.memories_by_sensor[sensor].count("ENTANGLED") >= self.min_entangled_memories:
+                    count_able_to_joint_measure += 1
+                    
+            if count_able_to_joint_measure >= self.min_entangled_sensors:
+                log.logger.info(f"{self.owner.name} app processing joint measurement.")
+                self.simulate_joint_measurement()
+    
+    def should_process_fallback(self, sensor_name: str):
+        if self.owner.timeline.now() >= self.end_time:
+            if sensor_name in self.sensors_to_monitor:
+                if self.memories_by_sensor.get(sensor_name) is None:
+                    log.logger.info(f"{self.owner.name} app processing fallback for {sensor_name}.")
+                    msg = GHZMessage(
+                        msg_type=GHZMessageType.ATTEMPT_FAILED,
+                        receiver=sensor_name+"-ghz-app"
+                    )
+                    self.owner.send_message(sensor_name, msg)
+                    
+    
+    def to_register_memories(self, sensor_name: str, info: str):
+        """
+        Registra o status das memórias recebidas de um sensor.
+        """
+        if self.memories_by_sensor.get(sensor_name) is None:
+            self.memories_by_sensor[sensor_name] = []
         
-        log.logger.info(f"{self.owner.name} app freed memories: {[info.index for info in memory_infos]}.")
-        self.entangled_sensors = {}
-
-    # Métodos obrigatórios mas não utilizados
+        if len(self.memories_by_sensor[sensor_name]) < self.memory_size:
+            self.memories_by_sensor[sensor_name].append(info)
+            
+        
+        
+    def received_message(self, src: str, msg):
+        if msg.msg_type == GHZMessageType.ACEPT_GHZ:
+            log.logger.info(f"{self.owner.name} app received ACEPT GHZ message from {src}")
+            self.request_entanglement(src)
+        elif msg.msg_type == GHZMessageType.STATUS_UPDATE:
+            self.should_process_fallback(src)
+        elif msg.msg_type == GHZMessageType.CLASSICAL_FALLBACK:
+            log.logger.info(f"{self.owner.name} app received CLASSICAL_FALLBACK message from {src}")
+        else:
+            log.logger.warning(f"{self.owner.name} app received unknown message type {msg.msg_type} from {src}")
+            
+        # Métodos obrigatórios mas não utilizados
     def get_other_reservation(self, reservation):
         # Este método não deve ser chamado no modelo ativo, pois o Hub é o iniciador.
         # Mas o mantemos por compatibilidade com a herança de Protocol.
@@ -110,33 +130,7 @@ class GHZRequestApp(Protocol):
         """
         Callback para receber o resultado de uma solicitação de reserva.
         """
-        print(result)
         if result:
             log.logger.info(f"Reservation for {reservation.responder} approved on node {self.owner.name}")
         else:
             log.logger.info(f"Reservation for {reservation.responder} failed on node {self.owner.name}")
-            # FUTURAMENTE: aqui poderíamos implementar uma lógica de retentativa ou
-            # decidir prosseguir com um estado GHZ com menos qubits.
-    
-    def attempt_failed(self, sensor_name: str):
-        if sensor_name in self.sensors_to_monitor:
-            if sensor_name not in self.entangled_sensors:
-                log.logger.info(f"{self.owner.name} app processing fallback for {sensor_name}.")
-                msg = GHZMessage(
-                    msg_type=GHZMessageType.ATTEMPT_FAILED,
-                    receiver=sensor_name+"-ghz-app"
-                )
-                self.owner.send_message(sensor_name, msg)
-                
-    
-    def received_message(self, src: str, msg):
-        if msg.msg_type == GHZMessageType.ACEPT_GHZ:
-            log.logger.info(f"{self.owner.name} app received ACEPT GHZ message from {src}")
-            self.request_entanglement(src)
-        elif msg.msg_type == GHZMessageType.STATUS_UPDATE:
-            if msg.status == "RAW":
-                self.attempt_failed(src)
-        elif msg.msg_type == GHZMessageType.CLASSICAL_FALLBACK:
-            log.logger.info(f"{self.owner.name} app received CLASSICAL_FALLBACK message from {src}")
-        else:
-            log.logger.warning(f"{self.owner.name} app received unknown message type {msg.msg_type} from {src}")
