@@ -4,7 +4,7 @@ from sequence.components.circuit import Circuit
 from sequence.network_management.reservation import Reservation 
 from .message_ghz_active import GHZMessageType, GHZMessage
 
-class GHZRequestApp(Protocol):
+class HubGHZActiveApp(Protocol):
     """Uma aplicação 'ativa' para o Hub.
     Esta aplicação inicia ativamente o processo, solicitando emaranhamento com uma lista de nós sensores.
     """

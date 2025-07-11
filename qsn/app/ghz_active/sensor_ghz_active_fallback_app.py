@@ -4,7 +4,7 @@ from sequence.message import Message
 from .message_ghz_active import GHZMessageType, GHZMessage
 from sequence.components.circuit import Circuit
 
-class FallBackApp(Protocol):
+class SensorGHZActiveFallBackApp(Protocol):
     """Uma aplicação/protocolo para nós sensores.
     Reage a solicitações de emaranhamento de um hub.
     """

@@ -4,8 +4,8 @@
 # Sempre adicionar novos módulos aqui quando forem criados ou modificados.
 
 TRACKED_MODULES = [
-    "hub_ghz_active",
-    "sensor_ghz_active",
+    "hub_ghz_active_app",
+    "sensor_ghz_active_app",
     "message_ghz_active",
-    "sensor_ghz_active_fallback"
+    "sensor_ghz_active_fallback_app"
 ]

@@ -1,6 +1,6 @@
-from config import setup_logger
+from utils import setup_logger
 from sequence.topology.router_net_topo import RouterNetTopo
-from app.ghz_active import GHZRequestApp, EntanglamentResponderApp
+from app.ghz_active import HubGHZActiveApp, SensorGHZActiveApp
     
 def set_parameters(topology: RouterNetTopo):
     """Função para configurar os parâmetros da rede (idêntica à anterior)."""
@@ -69,18 +69,18 @@ if __name__ == "__main__":
     hub2_sensors = ["Sensor1H2", "Sensor2H2"]
     
     sensor1h1 = sensors.get("Sensor1H1")
-    app_sensor1h1 = EntanglamentResponderApp(sensor1h1)
+    app_sensor1h1 = SensorGHZActiveApp(sensor1h1)
     sensor1h1.set_app(app_sensor1h1)
     sensor2h1 = sensors.get("Sensor2H1")
-    app_sensor2h1 = EntanglamentResponderApp(sensor2h1)
+    app_sensor2h1 = SensorGHZActiveApp(sensor2h1)
     sensor2h1.set_app(app_sensor2h1)
     
     print("Instalando aplicações nos sensores...")
-    app_hub1 = GHZRequestApp(hubs.get("Hub1"), hub1_sensors, start_time, end_time)
+    app_hub1 = HubGHZActiveApp(hubs.get("Hub1"), hub1_sensors, start_time, end_time)
     hubs["Hub1"].set_app(app_hub1)
     print(f"Aplicação instalada no hub: {hubs['Hub1'].app.name}")
     
-    app_hub2 = GHZRequestApp(hubs.get("Hub2"), hub2_sensors, start_time, end_time)
+    app_hub2 = HubGHZActiveApp(hubs.get("Hub2"), hub2_sensors, start_time, end_time)
     hubs["Hub2"].set_app(app_hub2)
     print(f"Aplicação instalada no hub: {hubs['Hub2'].app.name}")
     

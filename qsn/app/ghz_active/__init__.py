@@ -1,3 +1,3 @@
-from .hub_ghz_active import GHZRequestApp
+from .hub_ghz_active_app import HubGHZActiveApp
 from .message_ghz_active import GHZMessageType, GHZMessage
-from .sensor_ghz_active import EntanglamentResponderApp
+from .sensor_ghz_active_app import SensorGHZActiveApp

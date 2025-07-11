@@ -3,9 +3,9 @@ from sequence.protocol import Protocol
 from sequence.message import Message
 from .message_ghz_active import GHZMessageType, GHZMessage
 from sequence.components.circuit import Circuit
-from .sensor_ghz_active_fallback import FallBackApp
+from .sensor_ghz_active_fallback_app import SensorGHZActiveFallBackApp
 
-class EntanglamentResponderApp(Protocol):
+class SensorGHZActiveApp(Protocol):
     """Uma aplicação/protocolo para nós sensores.
     Reage a solicitações de emaranhamento de um hub.
     """
@@ -62,7 +62,7 @@ class EntanglamentResponderApp(Protocol):
         log.logger.info(f"{self.owner.name} app accepted GHZ proposal from {src}")
     
     def fallback(self):
-        app = FallBackApp(self.owner, self.hub_name)
+        app = SensorGHZActiveFallBackApp(self.owner, self.hub_name)
         self.owner.set_app(app)
         self.owner.app.start()
         self.owner.protocols.remove(self)
