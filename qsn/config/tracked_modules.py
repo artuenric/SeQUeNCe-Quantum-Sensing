@@ -4,7 +4,7 @@
 # Sempre adicionar novos módulos aqui quando forem criados ou modificados.
 
 TRACKED_MODULES = [
-    "ghz_request_app",
-    "entanglement_responder_app",
-    "ghz_handler_app"
+    "hub_ghz_active",
+    "sensor_ghz_active",
+    "message_ghz_active",
 ]
