@@ -1,22 +1,22 @@
 0                    INFO    hub_ghz_active_app     Hub1 app starting active GHZ process.
-100,000,000          INFO    sensor_ghz_active_app  Sensor3H1 app set hub to Hub1
-100,000,000          INFO    sensor_ghz_active_app  Sensor3H1 app accepted GHZ proposal from Hub1
 100,000,000          INFO    sensor_ghz_active_app  Sensor4H1 app set hub to Hub1
 100,000,000          INFO    sensor_ghz_active_app  Sensor4H1 app accepted GHZ proposal from Hub1
-200,000,000          INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor3H1
-200,000,000          INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor3H1.
+100,000,000          INFO    sensor_ghz_active_app  Sensor2H1 app set hub to Hub1
+100,000,000          INFO    sensor_ghz_active_app  Sensor2H1 app accepted GHZ proposal from Hub1
 200,000,000          INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor4H1
 200,000,000          INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor4H1.
-300,000,000          INFO    sensor_ghz_active_app  Sensor3H1 app received reservation request from Hub1
+200,000,000          INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor2H1
+200,000,000          INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor2H1.
 300,000,000          INFO    sensor_ghz_active_app  Sensor4H1 app received reservation request from Hub1
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor3H1 approved on node Hub1
+300,000,000          INFO    sensor_ghz_active_app  Sensor2H1 app received reservation request from Hub1
 400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor4H1 approved on node Hub1
-1,002,150,025,010    INFO    sensor_ghz_active_app  Sensor3H1 sent status 'ENTANGLED' update to Hub1
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor3H1.
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor2H1 approved on node Hub1
 1,002,150,025,010    INFO    sensor_ghz_active_app  Sensor4H1 sent status 'ENTANGLED' update to Hub1
 1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor4H1.
-3,000,000,000,000    INFO    sensor_ghz_active_app  Sensor3H1 sent status 'RAW' update to Hub1
+1,002,150,025,010    INFO    sensor_ghz_active_app  Sensor2H1 sent status 'ENTANGLED' update to Hub1
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor2H1.
 3,000,000,000,000    INFO    sensor_ghz_active_app  Sensor4H1 sent status 'RAW' update to Hub1
+3,000,000,000,000    INFO    sensor_ghz_active_app  Sensor2H1 sent status 'RAW' update to Hub1
 3,000,000,000,000    INFO    hub_ghz_active_app     Hub1 app processing joint measurement.
 3,000,000,000,000    INFO    hub_ghz_active_app     Hub1 app joint measurement simulated successfully.
 3,000,000,000,000    INFO    hub_ghz_active_app     Hub1 app processing joint measurement.
