@@ -1,66 +1,10 @@
-from abc import ABC, abstractmethod
 from sequence.utils import log
 from sequence.protocol import Protocol
 from sequence.message import Message
 from .message_ghz_active import GHZMessageType, GHZMessage
+from .states import SensorState, NormalState, FallbackState
 
 
-# Passo 2: Criação da Estrutura de Estados
-class SensorState(ABC):
-    """Classe base abstrata para os estados do sensor."""
-    def __init__(self, app):
-        self.app = app
-
-    @abstractmethod
-    def handle_message(self, src: str, msg: Message):
-        """Lida com mensagens recebidas, dependendo do estado atual."""
-        pass
-
-    def enter(self):
-        """Método opcional para executar na entrada do estado."""
-        pass
-
-
-# Passo 3: Implementação do Estado Normal (Plano A)
-class NormalState(SensorState):
-    """Estado normal de operação, aguardando propostas GHZ."""
-    def handle_message(self, src: str, msg: Message):
-        if msg.msg_type == GHZMessageType.PROPOSE_GHZ:
-            self.app.set_hub_name(src)
-            self.app.acept_ghz(src)
-        elif msg.msg_type == GHZMessageType.ATTEMPT_FAILED:
-            log.logger.info(f"{self.app.owner.name} received ATTEMPT_FAILED. Transitioning to FallbackState.")
-            self.app.transition_to(FallbackState(self.app))
-        else:
-            log.logger.warning(f"{self.app.owner.name} app received unknown message type {msg.msg_type} in NormalState from {src}")
-
-
-# Passo 4: Implementação do Estado de Fallback (Plano B)
-class FallbackState(SensorState):
-    """Estado de fallback, executa medição local e envia o resultado."""
-    def __init__(self, app):
-        super().__init__(app)
-        self.enter()
-
-    def enter(self):
-        """Na entrada, executa a lógica de fallback."""
-        log.logger.info(f"{self.app.owner.name} app executing fallback by sending classical result to Hub.")
-        classical_result = self.app.local_measurement()
-        msg = GHZMessage(
-            GHZMessageType.CLASSICAL_FALLBACK, 
-            self.app.hub_app_name, 
-            classical_result=classical_result
-        )
-        self.app.owner.send_message(self.app.hub_name, msg)
-        log.logger.info(f"{self.app.owner.name} sent classical result {classical_result} to node {self.app.hub_name}.")
-
-    def handle_message(self, src: str, msg: Message):
-        """Neste estado, a maioria das mensagens é ignorada."""
-        log.logger.debug(f"{self.app.owner.name} received message in FallbackState from {src}. Ignoring.")
-        pass
-
-
-# Passo 1 e 5: Unificação e Transformação de SensorApp no Contexto
 class SensorApp(Protocol):
     """Aplicação unificada para nós sensores que gerencia seu próprio estado."""
 
