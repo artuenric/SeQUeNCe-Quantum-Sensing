@@ -1,5 +1,5 @@
 from sequence.topology.router_net_topo import RouterNetTopo
-from app.ghz_active import HubGHZActiveApp, SensorGHZActiveApp
+from app.ghz_active import HubGHZActiveApp, SensorApp
 from utils import setup_logger
 # Importamos a função e o dicionário do nosso arquivo de parâmetros
 from parameters import set_parameters, CONFIG
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         for sensor_name in sensor_names:
             sensor_node = node_map.get(sensor_name)
             if sensor_node:
-                app_sensor = SensorGHZActiveApp(sensor_node)
+                app_sensor = SensorApp(sensor_node)
                 sensor_node.set_app(app_sensor)
                 print(f"    Aplicação instalada no sensor: {sensor_name}")
 
