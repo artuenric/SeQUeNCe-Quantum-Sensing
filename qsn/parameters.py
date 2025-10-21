@@ -44,6 +44,12 @@ CONFIG = {
         "canal_quantico": {
             "ATTENUATION": 0.0002,
         }
+    },
+    "circuito_quantico": {
+        "operacoes": [
+            ("H", 0),
+            ("CX", 0, 1)
+        ]
     }
 }
 

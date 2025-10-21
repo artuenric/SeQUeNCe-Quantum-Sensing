@@ -169,7 +169,8 @@ def main(hub_name: str = "Hub1", seed: Optional[int] = None):
     # Instala a App no Hub (informando os sensores selecionados)
     hub_app = HubGHZActiveApp(hub_node, selected_sensors,
                               CONFIG["simulacao"]["START_TIME"],
-                              CONFIG["simulacao"]["END_TIME"])
+                              CONFIG["simulacao"]["END_TIME"],
+                              CONFIG["circuito_quantico"]["operacoes"])
     hub_node.set_app(hub_app)
     print(f"Aplicação instalada no Hub: {hub_node.name}")
 

@@ -2,6 +2,8 @@ from sequence.utils import log
 from sequence.protocol import Protocol
 from sequence.components.circuit import Circuit
 from sequence.network_management.reservation import Reservation
+from sequence.kernel.event import Event
+from sequence.kernel.process import Process
 from .message_ghz_active import GHZMessageType, GHZMessage
 
 
@@ -20,9 +22,10 @@ class HubGHZActiveApp(Protocol):
         memory_size (int): The number of memories to request for entanglement.
         start_time (int): The simulation time at which to start entanglement requests.
         end_time (int): The simulation time at which to end entanglement attempts.
+        quantum_circuit_operations (list): A list of quantum operations to be applied.
     """
 
-    def __init__(self, owner, sensors_to_monitor: list, start_time=1e12, end_time=10e12):
+    def __init__(self, owner, sensors_to_monitor: list, start_time=1e12, end_time=10e12, quantum_circuit_operations: list = None):
         """Constructor for the HubGHZActiveApp.
 
         Args:
@@ -30,6 +33,7 @@ class HubGHZActiveApp(Protocol):
             sensors_to_monitor (list[str]): The list of sensor names to entangle with.
             start_time (int): The start time for entanglement requests.
             end_time (int): The end time for entanglement requests.
+            quantum_circuit_operations (list, optional): A list of quantum operations to be applied. Defaults to None.
         """
         name = f"{owner.name}-ghz-app"
         super().__init__(owner, name)
@@ -41,6 +45,13 @@ class HubGHZActiveApp(Protocol):
         self.memory_size = 1
         self.start_time = start_time
         self.end_time = end_time
+        self.quantum_circuit_operations = quantum_circuit_operations if quantum_circuit_operations is not None else []
+        if self.quantum_circuit_operations:
+            log.logger.info(f"Quantum circuit loaded with operations: {self.quantum_circuit_operations}")
+        # compute required qubits from circuit and init completion flag
+        self.required_qubits = self._compute_required_qubits()
+        self.completed = False
+        log.logger.info(f"{self.owner.name} app circuit requires {self.required_qubits} qubits.")
 
     def start(self):
         """Starts the process by sending GHZ proposals to all monitored sensors."""
@@ -55,6 +66,11 @@ class HubGHZActiveApp(Protocol):
                 hub_name=self.owner.name
             )
             self.owner.send_message(sensor_name, msg)
+        
+        # agendar verificação única no fim da janela de entanglemento
+        process = Process(self, "should_process_joint_measurement", [])
+        event = Event(self.end_time, process)
+        self.owner.timeline.schedule(event)
             
     def request_entanglement(self, sensor_name: str):
         """Requests entanglement with a specified sensor.
@@ -84,25 +100,116 @@ class HubGHZActiveApp(Protocol):
         if info.state == "ENTANGLED":
             self.to_register_memories(info.remote_node, info.state)
             log.logger.info(f"{self.owner.name} app registered entangled memory from {info.remote_node}.")
-        
-        if self.owner.timeline.now() >= self.end_time:
-            self.should_process_joint_measurement()
+            # early trigger: if we already have enough entangled sensors, run now
+            if not self.completed:
+                entangled_memory_nodes = {mi.remote_node for mi in self.owner.resource_manager.memory_manager if mi.state == "ENTANGLED"}
+                ready_sensors = [
+                    s for s in self.sensors_to_monitor
+                    if self.memories_by_sensor.get(s, []).count("ENTANGLED") >= self.min_entangled_memories and s in entangled_memory_nodes
+                ]
+                if len(ready_sensors) >= self.required_qubits:
+                    log.logger.info(f"{self.owner.name} app has {len(ready_sensors)} ready sensors; triggering joint measurement early.")
+                    self.simulate_joint_measurement()
             
     def simulate_joint_measurement(self):
-        """Applies the GHZ circuit to the entangled memories."""
-        log.logger.info(f"{self.owner.name} app joint measurement simulated successfully.")
+        """Aplica o circuito quântico customizado nas memórias emaranhadas e as mede."""
+        # 1) Determina quantos qubits o circuito exige (máximo índice + 1)
+        required_qubits = self.required_qubits if getattr(self, "required_qubits", None) else self._compute_required_qubits()
+
+        # 2) Mapeia memórias ENTANGLED por sensor remoto
+        entangled_memory_map = {}
+        for mem_info in self.owner.resource_manager.memory_manager:
+            if mem_info.state == "ENTANGLED" and mem_info.remote_node:
+                # mantém apenas uma memória por sensor remoto (primeira encontrada)
+                entangled_memory_map.setdefault(mem_info.remote_node, mem_info.memory)
+
+        # 3) Sensores com emaranhamento confirmado pelo nosso tracking interno
+        entangled_sensors = [
+            s for s in self.sensors_to_monitor
+            if self.memories_by_sensor.get(s, []).count("ENTANGLED") >= self.min_entangled_memories and s in entangled_memory_map
+        ]
+
+        # logs de depuração
+        log.logger.info(f"{self.owner.name} app entangled_sensors(tracked): {entangled_sensors}")
+        log.logger.info(f"{self.owner.name} app entangled_memory_map(keys): {list(entangled_memory_map.keys())}")
+
+        if len(entangled_sensors) < required_qubits:
+            log.logger.warning(
+                f"{self.owner.name} app has only {len(entangled_sensors)} entangled sensors; requires {required_qubits} to run the circuit.")
+            return
+
+        # 4) Seleciona exatamente os qubits necessários na ordem dos sensores
+        selected_sensors = entangled_sensors[:required_qubits]
+        entangled_qubits = [entangled_memory_map[s] for s in selected_sensors]
+        log.logger.info(f"{self.owner.name} app selected sensors for circuit: {selected_sensors}")
+
+        # 5) Constrói o circuito com o tamanho mínimo necessário
+        circuit = Circuit(len(entangled_qubits))
+        for op, *qubits_indices in self.quantum_circuit_operations:
+            if all(isinstance(i, int) and i < len(entangled_qubits) for i in qubits_indices):
+                try:
+                    gate_method = getattr(circuit, op.lower())
+                    gate_method(*qubits_indices)
+                except AttributeError:
+                    log.logger.error(f"Gate '{op}' not supported by Circuit class. Application aborted.")
+                    return
+            else:
+                log.logger.error(f"Invalid qubit index in operation {op}{qubits_indices}. Circuit application aborted.")
+                return
+
+        # 6) Marca medições no circuito para todos os qubits usados
+        for i in range(len(entangled_qubits)):
+            circuit.measure(i)
+
+        # 7) Aplica o circuito via QuantumManager.run_circuit com amostra de medição
+        try:
+            keys = [q.qstate_key for q in entangled_qubits]
+            qm = self.owner.timeline.quantum_manager
+            meas_samp = float(self.owner.get_generator().random())
+            results_map = qm.run_circuit(circuit, keys, meas_samp=meas_samp)
+        except Exception as e:
+            log.logger.error(f"Failed to run circuit: {e}")
+            return
+
+        # 8) Ordena os resultados pela ordem dos qubits selecionados
+        outcomes = [int(results_map.get(key, 0)) for key in keys]
+        for i, outcome in enumerate(outcomes):
+            log.logger.info(f"{self.owner.name} app measured qubit {i} with outcome {outcome}.")
+
+        log.logger.info(f"{self.owner.name} app joint measurement with custom circuit completed. Outcomes: {outcomes}")
+        self.completed = True
     
     def should_process_joint_measurement(self):
-        """Checks if conditions are met to perform a joint measurement."""
-        count_able_to_joint_measure = 0
-        if len(self.memories_by_sensor.keys()) == len(self.sensors_to_monitor):
-            for sensor in self.memories_by_sensor.keys():
-                if self.memories_by_sensor[sensor].count("ENTANGLED") >= self.min_entangled_memories:
-                    count_able_to_joint_measure += 1
-            
-            if count_able_to_joint_measure >= self.min_entangled_sensors:
-                log.logger.info(f"{self.owner.name} app processing joint measurement.")
-                self.simulate_joint_measurement()
+        """Verifica se há recursos suficientes para executar a medição conjunta e o circuito."""
+        # Requisito mínimo ditado pelo circuito
+        if self.completed:
+            return
+        required_qubits = self.required_qubits if getattr(self, "required_qubits", None) else self._compute_required_qubits()
+
+        # Sensores com ENTANGLED suficientes (pelo tracking interno) E com memória entangled disponível no hub
+        entangled_memory_nodes = {mi.remote_node for mi in self.owner.resource_manager.memory_manager if mi.state == "ENTANGLED"}
+        entangled_sensors = [
+            s for s in self.sensors_to_monitor
+            if self.memories_by_sensor.get(s, []).count("ENTANGLED") >= self.min_entangled_memories and s in entangled_memory_nodes
+        ]
+        entangled_qubits_count = len(entangled_sensors)
+
+        if entangled_qubits_count >= required_qubits:
+            log.logger.info(f"{self.owner.name} app processing joint measurement with custom circuit.")
+            self.simulate_joint_measurement()
+        else:
+            log.logger.warning(
+                f"{self.owner.name} app has only {entangled_qubits_count} entangled qubits; requires {required_qubits} to run the circuit.")
+
+    def _compute_required_qubits(self) -> int:
+        rq = 1
+        try:
+            for op, *indices in self.quantum_circuit_operations:
+                if indices:
+                    rq = max(rq, max(indices) + 1)
+        except Exception:
+            pass
+        return rq
     
     def should_process_fallback(self, sensor_name: str):
         """Checks if a fallback message should be sent to a sensor.
