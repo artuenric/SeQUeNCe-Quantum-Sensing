@@ -25,7 +25,10 @@ class HubGHZActiveApp(Protocol):
         quantum_circuit_operations (list): A list of quantum operations to be applied.
     """
 
-    def __init__(self, owner, sensors_to_monitor: list, start_time=1e12, end_time=10e12, quantum_circuit_operations: list = None):
+    def __init__(self, owner, sensors_to_monitor: list, start_time=1e12, end_time=10e12,
+                 quantum_circuit_operations: list = None,
+                 append_ghz: bool = False,
+                 ghz_topology: str = "chain"):
         """Constructor for the HubGHZActiveApp.
 
         Args:
@@ -46,10 +49,16 @@ class HubGHZActiveApp(Protocol):
         self.start_time = start_time
         self.end_time = end_time
         self.quantum_circuit_operations = quantum_circuit_operations if quantum_circuit_operations is not None else []
+        # Quando append_ghz=True, o app acrescenta automaticamente as portas necessárias
+        # para realizar uma medição na base GHZ antes de medir. ghz_topology pode ser
+        # "chain" (H(0); CX(0,1); CX(1,2); ...) ou "star" (CX(0,j) para j>=1; depois H(0)).
+        self.append_ghz = append_ghz
+        self.ghz_topology = ghz_topology  # "chain" | "star"
         if self.quantum_circuit_operations:
             log.logger.info(f"Quantum circuit loaded with operations: {self.quantum_circuit_operations}")
         # compute required qubits from circuit and init completion flag
-        self.required_qubits = self._compute_required_qubits()
+        # Se vamos fazer GHZ automático, vamos esperar TODOS os sensores informados.
+        self.required_qubits = len(sensors_to_monitor) if self.append_ghz else self._compute_required_qubits()
         self.completed = False
         log.logger.info(f"{self.owner.name} app circuit requires {self.required_qubits} qubits.")
 
@@ -145,7 +154,15 @@ class HubGHZActiveApp(Protocol):
 
         # 5) Constrói o circuito com o tamanho mínimo necessário
         circuit = Circuit(len(entangled_qubits))
-        for op, *qubits_indices in self.quantum_circuit_operations:
+        # Pré-operações fornecidas pelo usuário (se houver)
+        operations = list(self.quantum_circuit_operations)
+        # Se configurado, acrescenta as portas de GHZ antes da medição
+        if self.append_ghz:
+            ghz_ops = self._build_ghz_ops(len(entangled_qubits))
+            operations += ghz_ops
+            log.logger.info(f"{self.owner.name} app appended GHZ ops ({self.ghz_topology}): {ghz_ops}")
+
+        for op, *qubits_indices in operations:
             if all(isinstance(i, int) and i < len(entangled_qubits) for i in qubits_indices):
                 try:
                     gate_method = getattr(circuit, op.lower())
@@ -210,6 +227,25 @@ class HubGHZActiveApp(Protocol):
         except Exception:
             pass
         return rq
+    
+    def _build_ghz_ops(self, n: int):
+        """Gera as operações para medição na base GHZ com n qubits.
+
+        Topologias suportadas:
+        - chain: H(0); CX(0,1); CX(1,2); ...; CX(n-2, n-1)
+        - star:  CX(0,j) para j=1..n-1; H(0)
+        """
+        ops = []
+        if n <= 1:
+            return ops
+        if self.ghz_topology == "star":
+            ops += [("CX", 0, j) for j in range(1, n)]
+            ops += [("H", 0)]
+        else:  # chain (padrão)
+            ops += [("H", 0)]
+            for j in range(0, n - 1):
+                ops += [("CX", j, j + 1)]
+        return ops
     
     def should_process_fallback(self, sensor_name: str):
         """Checks if a fallback message should be sent to a sensor.
