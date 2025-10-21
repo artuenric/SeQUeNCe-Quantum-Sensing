@@ -47,9 +47,11 @@ def try_imports():
         print("Erro ao importar aplicações GHZ (qsn.app.ghz_active):", e)
 
     try:
-        from qsn.parameters import set_parameters, CONFIG
+        # Novos módulos na raiz do projeto
+        from config import CONFIG
+        from parameters_utils import set_parameters
     except Exception as e:
-        print("Erro ao importar set_parameters/CONFIG (qsn.parameters):", e)
+        print("Erro ao importar CONFIG/set_parameters (config / parameters_utils):", e)
 
     # setup_logger pode estar exposto em qsn.utils ou em qsn.utils.logging_setup
     try:
@@ -89,7 +91,7 @@ def main(hub_name: str = "Hub1", seed: Optional[int] = None):
         if HubGHZActiveApp is None or SensorApp is None:
             print(" - qsn.app.ghz_active.HubGHZActiveApp / SensorApp")
         if set_parameters is None or CONFIG is None:
-            print(" - qsn.parameters.set_parameters / CONFIG")
+            print(" - parameters_utils.set_parameters / config.CONFIG")
         sys.exit(1)
 
     # Opcional: semente para reprodutibilidade
