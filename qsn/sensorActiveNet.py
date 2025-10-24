@@ -1,8 +1,9 @@
 from sequence.topology.router_net_topo import RouterNetTopo
 from app.ghz_active import HubGHZActiveApp, SensorApp
 from utils import setup_logger
-# Importamos a função e o dicionário do nosso arquivo de parâmetros
-from parameters import set_parameters, CONFIG
+# Importações atualizadas dos módulos na raiz do projeto
+from config import CONFIG
+from parameters_utils import set_parameters
 
 if __name__ == "__main__":
     # 1. Carregar configurações diretamente do dicionário CONFIG

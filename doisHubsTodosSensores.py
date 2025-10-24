@@ -3,7 +3,8 @@ Script: doisHubsTodosSensores.py
 
 Objetivo
 - Variante do guia.py que executa a simulação envolvendo 2 hubs e TODOS os sensores de cada hub, em vez de apenas 2 sensores por hub.
-- Este script é autossuficiente: inclui CONFIG e set_parameters embutidos (não altera nem importa qsn.parameters).
+- Agora utiliza os módulos centrais 'config' (CONFIG) e 'parameters_utils' (set_parameters),
+  sem cópias locais de configuração/parametrização.
 
 Uso rápido
 - python doisHubsTodosSensores.py --seed 123
@@ -11,7 +12,6 @@ Uso rápido
 
 Notas
 - Requer que as aplicações qsn.app.ghz_active (HubGHZActiveApp e SensorApp) e a topologia RouterNetTopo da biblioteca SeQUeNCe estejam instaladas no ambiente.
-- O arquivo de rede padrão é qsn/net.json (mesmo caminho usado no projeto atual).
 """
 from __future__ import annotations
 
@@ -20,14 +20,14 @@ import random
 import sys
 from typing import Dict, List, Optional, Tuple
 
+# Importa APENAS a função de parametrização; este script define seu próprio CONFIG
+from parameters_utils import set_parameters
 
-# ==========================
-# CONFIG e set_parameters
-# ==========================
-# Copiados e embutidos aqui para tornar o script independente de qsn.parameters
+# CONFIG específico deste script (diferente do guia.py)
 CONFIG: Dict[str, object] = {
     "simulacao": {
-        "NETWORK_CONFIG_FILE": "qsn/net.json",
+        # net.json na raiz do projeto
+        "NETWORK_CONFIG_FILE": "net.json",
         "LOG_FILE_NAME": "log",
         "START_TIME": 1e12,
         "END_TIME": 3e12,
@@ -38,68 +38,21 @@ CONFIG: Dict[str, object] = {
         {"name": "Hub3", "sensors": ["Sensor1H3", "Sensor2H3", "Sensor3H3", "Sensor4H3"]},
     ],
     "hardware": {
-        "memoria": {
-            "FREQ": 2e3,
-            "EXPIRE": 0,
-            "EFFICIENCY": 1,
-            "FIDELITY": 0.93,
-        },
-        "swapping": {
-            "SUCC_PROB": 0.64,
-            "DEGRADATION": 0.99,
-        },
-        "detector": {
-            "EFFICIENCY": 0.9,
-            "COUNT_RATE": 5e7,
-            "RESOLUTION": 100,
-        },
-        "canal_quantico": {
-            "ATTENUATION": 0.0002,
-        },
+        "memoria": {"FREQ": 2e3, "EXPIRE": 0, "EFFICIENCY": 1, "FIDELITY": 0.93},
+        "swapping": {"SUCC_PROB": 0.64, "DEGRADATION": 0.99},
+        "detector": {"EFFICIENCY": 0.9, "COUNT_RATE": 5e7, "RESOLUTION": 100},
+        "canal_quantico": {"ATTENUATION": 0.0002},
     },
+    # Operações próprias deste cenário
     "circuito_quantico": {
         "operacoes": [
             ("X", 0),
             ("X", 1),
             ("X", 2),
-            ("X", 3)
+            ("X", 3),
         ]
     },
 }
-
-
-def set_parameters(topology):
-    """Configura os parâmetros da rede quântica com base no dicionário CONFIG."""
-    try:
-        from sequence.topology.router_net_topo import RouterNetTopo  # type: ignore
-    except Exception:
-        RouterNetTopo = None  # type: ignore
-
-    hardware = CONFIG["hardware"]
-
-    # Memórias dos roteadores
-    for node in topology.get_nodes_by_type(getattr(RouterNetTopo, "QUANTUM_ROUTER", "QuantumRouter")):
-        memory_array = node.get_components_by_type("MemoryArray")[0]
-        memory_array.update_memory_params("frequency", hardware["memoria"]["FREQ"])
-        memory_array.update_memory_params("coherence_time", hardware["memoria"]["EXPIRE"])
-        memory_array.update_memory_params("efficiency", hardware["memoria"]["EFFICIENCY"])
-        memory_array.update_memory_params("raw_fidelity", hardware["memoria"]["FIDELITY"])
-
-    # Parâmetros de swapping (na pilha do gerenciador de rede)
-    for node in topology.get_nodes_by_type(getattr(RouterNetTopo, "QUANTUM_ROUTER", "QuantumRouter")):
-        node.network_manager.protocol_stack[1].set_swapping_success_rate(hardware["swapping"]["SUCC_PROB"])
-        node.network_manager.protocol_stack[1].set_swapping_degradation(hardware["swapping"]["DEGRADATION"])
-
-    # BSMs
-    for node in topology.get_nodes_by_type(getattr(RouterNetTopo, "BSM_NODE", "BSMNode")):
-        bsm = node.get_components_by_type("SingleAtomBSM")[0]
-        bsm.update_detectors_params("efficiency", hardware["detector"]["EFFICIENCY"])
-        bsm.update_detectors_params("count_rate", hardware["detector"]["COUNT_RATE"])
-        bsm.update_detectors_params("time_resolution", hardware["detector"]["RESOLUTION"])
-
-    # Canais quânticos
-    for qc in topology.get_qchannels():
-        qc.attenuation = hardware["canal_quantico"]["ATTENUATION"]
 
 
 # ==========================
@@ -215,7 +168,8 @@ def main(hubs: Optional[List[str]] = None, seed: Optional[int] = None):
     # 4) Aplica parâmetros de hardware
     print("Aplicando parâmetros de hardware (memórias, detectores, etc.)...")
     try:
-        set_parameters(network_topo)
+        # Usa a função central, passando a CONFIG local deste script
+        set_parameters(network_topo, config=CONFIG)
         print("Parâmetros aplicados.")
     except Exception as e:
         print("Falha ao aplicar parâmetros:", e)

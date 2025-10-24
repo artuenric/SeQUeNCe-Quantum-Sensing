@@ -1,18 +1,58 @@
-0                    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('H', 0), ('CX', 0, 1)]
-0                    INFO    hub_ghz_active_app     Hub1 app circuit requires 2 qubits.
-0                    INFO    hub_ghz_active_app     Hub1 app starting active GHZ process.
-200,000,000          INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor4H1
-200,000,000          INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor4H1.
-200,000,000          INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor3H1
-200,000,000          INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor3H1.
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor4H1 approved on node Hub1
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor3H1 approved on node Hub1
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor4H1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor3H1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app has 2 ready sensors; triggering joint measurement early.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app entangled_sensors(tracked): ['Sensor4H1', 'Sensor3H1']
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app entangled_memory_map(keys): ['Sensor4H1', 'Sensor3H1']
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app selected sensors for circuit: ['Sensor4H1', 'Sensor3H1']
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app measured qubit 0 with outcome 1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app measured qubit 1 with outcome 0.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub1 app joint measurement with custom circuit completed. Outcomes: [1, 0]
+0                    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
+0                    INFO    hub_ghz_active_app     Hub2 app circuit requires 4 qubits.
+0                    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
+0                    INFO    hub_ghz_active_app     Hub3 app circuit requires 4 qubits.
+0                    INFO    hub_ghz_active_app     Hub2 app starting active GHZ process.
+0                    INFO    hub_ghz_active_app     Hub3 app starting active GHZ process.
+200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor1H2
+200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor1H2.
+200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor2H2
+200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor2H2.
+200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor3H2
+200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor3H2.
+200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor4H2
+200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor4H2.
+200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor1H3
+200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor1H3.
+200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor2H3
+200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor2H3.
+200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor3H3
+200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor3H3.
+200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor4H3
+200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor4H3.
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor1H2 approved on node Hub2
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor2H2 approved on node Hub2
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor3H2 approved on node Hub2
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor4H2 approved on node Hub2
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor1H3 approved on node Hub3
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor2H3 approved on node Hub3
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor3H3 approved on node Hub3
+400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor4H3 approved on node Hub3
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor3H2.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor2H2.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor4H2.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app has 4 ready sensors; triggering joint measurement early.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app entangled_sensors(tracked): ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app entangled_memory_map(keys): ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app selected sensors for circuit: ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 0 with outcome 0.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 1 with outcome 1.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 2 with outcome 0.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 3 with outcome 0.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app joint measurement with custom circuit completed. Outcomes: [0, 1, 0, 0]
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor1H2.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app has 4 ready sensors; triggering joint measurement early.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app entangled_sensors(tracked): ['Sensor1H2', 'Sensor2H2', 'Sensor3H2', 'Sensor4H2']
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app entangled_memory_map(keys): ['Sensor1H2', 'Sensor2H2', 'Sensor3H2', 'Sensor4H2']
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app selected sensors for circuit: ['Sensor1H2', 'Sensor2H2', 'Sensor3H2', 'Sensor4H2']
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 0 with outcome 1.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 1 with outcome 1.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 2 with outcome 1.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 3 with outcome 1.
+1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app joint measurement with custom circuit completed. Outcomes: [1, 1, 1, 1]
