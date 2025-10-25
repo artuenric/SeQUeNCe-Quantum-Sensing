@@ -38,12 +38,12 @@ CONFIG: Dict[str, object] = {
         {"name": "Hub3", "sensors": ["Sensor1H3", "Sensor2H3", "Sensor3H3", "Sensor4H3"]},
     ],
     "hardware": {
-        "memoria": {"FREQ": 2e3, "EXPIRE": 0, "EFFICIENCY": 1, "FIDELITY": 0.93},
+        "memoria": {"FREQ": 2e3, "EXPIRE": 1, "EFFICIENCY": 1, "FIDELITY": 0.93},
         "swapping": {"SUCC_PROB": 0.64, "DEGRADATION": 0.99},
         "detector": {"EFFICIENCY": 0.9, "COUNT_RATE": 5e7, "RESOLUTION": 100},
         "canal_quantico": {"ATTENUATION": 0.0002},
     },
-    # Operações próprias deste cenário
+# Operações próprias deste cenário  
     "circuito_quantico": {
         "operacoes": [
             ("X", 0),

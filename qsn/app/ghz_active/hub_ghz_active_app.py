@@ -125,32 +125,62 @@ class HubGHZActiveApp(Protocol):
         # 1) Determina quantos qubits o circuito exige (máximo índice + 1)
         required_qubits = self.required_qubits if getattr(self, "required_qubits", None) else self._compute_required_qubits()
 
-        # 2) Mapeia memórias ENTANGLED por sensor remoto
-        entangled_memory_map = {}
+        # 2) Escolhe, por sensor, a memória ENTANGLED com MAIOR fidelidade
+        best_mem_by_sensor = {}
         for mem_info in self.owner.resource_manager.memory_manager:
-            if mem_info.state == "ENTANGLED" and mem_info.remote_node:
-                # mantém apenas uma memória por sensor remoto (primeira encontrada)
-                entangled_memory_map.setdefault(mem_info.remote_node, mem_info.memory)
+            if mem_info.state != "ENTANGLED" or not mem_info.remote_node:
+                continue
+            sensor = mem_info.remote_node
+            # Apenas sensores que estamos monitorando
+            if sensor not in self.sensors_to_monitor:
+                continue
+            try:
+                memo_name = mem_info.memory.name
+            except Exception:
+                memo_name = str(getattr(mem_info.memory, "name", "<unknown>"))
+            log.logger.info(
+                f"{self.owner.name} app checando fidelidade da memoria {memo_name} associada ao sensor {sensor} pra botar no circuito (f={mem_info.fidelity:.4f})."
+            )
+            prev = best_mem_by_sensor.get(sensor)
+            if prev is None or mem_info.fidelity > prev.fidelity:
+                best_mem_by_sensor[sensor] = mem_info
 
-        # 3) Sensores com emaranhamento confirmado pelo nosso tracking interno
-        entangled_sensors = [
-            s for s in self.sensors_to_monitor
-            if self.memories_by_sensor.get(s, []).count("ENTANGLED") >= self.min_entangled_memories and s in entangled_memory_map
-        ]
+        # 3) Sensores com emaranhamento confirmado pelo nosso tracking interno E com melhor memória disponível
+        candidate_infos = []  # lista de tuplas (sensor, MemoryInfo)
+        for sensor, mi in best_mem_by_sensor.items():
+            if self.memories_by_sensor.get(sensor, []).count("ENTANGLED") >= self.min_entangled_memories:
+                candidate_infos.append((sensor, mi))
 
-        # logs de depuração
-        log.logger.info(f"{self.owner.name} app entangled_sensors(tracked): {entangled_sensors}")
-        log.logger.info(f"{self.owner.name} app entangled_memory_map(keys): {list(entangled_memory_map.keys())}")
+        # logs de depuração do conjunto candidato
+        log.logger.info(f"{self.owner.name} app sensores candidatos por fidelidade: {[s for s,_ in candidate_infos]}")
 
-        if len(entangled_sensors) < required_qubits:
+        if len(candidate_infos) < required_qubits:
             log.logger.warning(
-                f"{self.owner.name} app has only {len(entangled_sensors)} entangled sensors; requires {required_qubits} to run the circuit.")
+                f"{self.owner.name} app tem apenas {len(candidate_infos)} sensores candidatos; requer {required_qubits} para rodar o circuito."
+            )
+            # também loga descartes por insuficiência
             return
 
-        # 4) Seleciona exatamente os qubits necessários na ordem dos sensores
-        selected_sensors = entangled_sensors[:required_qubits]
-        entangled_qubits = [entangled_memory_map[s] for s in selected_sensors]
-        log.logger.info(f"{self.owner.name} app selected sensors for circuit: {selected_sensors}")
+        # 4) Ordena candidatos por fidelidade decrescente e seleciona os necessários
+        candidate_infos.sort(key=lambda t: t[1].fidelity, reverse=True)
+        selected = candidate_infos[:required_qubits]
+        discarded = candidate_infos[required_qubits:]
+
+        # Logs de seleção/descarta por fidelidade
+        for sensor, mi in selected:
+            memo_name = getattr(getattr(mi, "memory", None), "name", "<unknown>")
+            log.logger.info(
+                f"{self.owner.name} app fidelidade da memória {memo_name} associada ao sensor {sensor} alta, adicionada ao circuito (f={mi.fidelity:.4f})."
+            )
+        for sensor, mi in discarded:
+            memo_name = getattr(getattr(mi, "memory", None), "name", "<unknown>")
+            log.logger.info(
+                f"{self.owner.name} app fidelidade da memória {memo_name} associada ao sensor {sensor} baixa, descartada (f={mi.fidelity:.4f})."
+            )
+
+        selected_sensors = [s for s, _ in selected]
+        entangled_qubits = [mi.memory for _, mi in selected]
+        log.logger.info(f"{self.owner.name} app selected sensors for circuit (by fidelity): {selected_sensors}")
 
         # 5) Constrói o circuito com o tamanho mínimo necessário
         circuit = Circuit(len(entangled_qubits))
