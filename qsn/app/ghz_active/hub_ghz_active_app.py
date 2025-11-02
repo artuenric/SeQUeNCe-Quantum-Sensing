@@ -21,11 +21,12 @@ class HubGHZActiveApp(Protocol):
         min_entangled_memories (int): The minimum number of entangled memories required per sensor.
         memory_size (int): The number of memories to request for entanglement.
         start_time (int): The simulation time at which to start entanglement requests.
+        entanglement_window (int): The duration to keep entanglement requests active.
         end_time (int): The simulation time at which to end entanglement attempts.
         quantum_circuit_operations (list): A list of quantum operations to be applied.
     """
 
-    def __init__(self, owner, sensors_to_monitor: list, start_time=1e12, end_time=10e12,
+    def __init__(self, owner, sensors_to_monitor: list, start_time=1e12, entanglement_window=2e12,
                  quantum_circuit_operations: list = None,
                  append_ghz: bool = False,
                  ghz_topology: str = "chain"):
@@ -35,32 +36,47 @@ class HubGHZActiveApp(Protocol):
             owner (Node): The hub node on which this application is installed.
             sensors_to_monitor (list[str]): The list of sensor names to entangle with.
             start_time (int): The start time for entanglement requests.
-            end_time (int): The end time for entanglement requests.
+            entanglement_window (int): How long entanglement attempts should remain valid.
             quantum_circuit_operations (list, optional): A list of quantum operations to be applied. Defaults to None.
         """
+        # Identificação do app e registro no Hub
         name = f"{owner.name}-ghz-app"
         super().__init__(owner, name)
         self.owner.protocols.append(self)
+
+        # Sensores monitorados e tracking local de memórias
         self.sensors_to_monitor = sensors_to_monitor
         self.memories_by_sensor = {}
+
+        # Parâmetros mínimos e alocação por sensor
         self.min_entangled_sensors = len(sensors_to_monitor) // 2
         self.min_entangled_memories = 1
         self.memory_size = 1
+
+        # Janela temporal para tentativas de emaranhamento
         self.start_time = start_time
-        self.end_time = end_time
+        self.entanglement_window = entanglement_window
+        self.end_time = self.start_time + self.entanglement_window
+
+        # Circuito quântico customizável (opcional)
         self.quantum_circuit_operations = quantum_circuit_operations if quantum_circuit_operations is not None else []
-        # Quando append_ghz=True, o app acrescenta automaticamente as portas necessárias
-        # para realizar uma medição na base GHZ antes de medir. ghz_topology pode ser
-        # "chain" (H(0); CX(0,1); CX(1,2); ...) ou "star" (CX(0,j) para j>=1; depois H(0)).
+
+        # Opções de preparação/medição GHZ automática
+        # ghz_topology: "chain" (H(0); CX(0,1); CX(1,2); ...) ou "star" (CX(0,j) j>=1; depois H(0))
         self.append_ghz = append_ghz
         self.ghz_topology = ghz_topology  # "chain" | "star"
         if self.quantum_circuit_operations:
             log.logger.info(f"Quantum circuit loaded with operations: {self.quantum_circuit_operations}")
-        # compute required qubits from circuit and init completion flag
-        # Se vamos fazer GHZ automático, vamos esperar TODOS os sensores informados.
+
+        # Pré-cálculos derivados e estado interno
+        # Se formos fazer GHZ automático, exigimos TODOS os sensores informados.
         self.required_qubits = len(sensors_to_monitor) if self.append_ghz else self._compute_required_qubits()
         self.completed = False
-        log.logger.info(f"{self.owner.name} app circuit requires {self.required_qubits} qubits.")
+
+        log.logger.info(
+            f"{self.owner.name} app circuit requires {self.required_qubits} qubits "
+            f"within a {self.entanglement_window} time-unit entanglement window."
+        )
 
     def start(self):
         """Starts the process by sending GHZ proposals to all monitored sensors."""
@@ -75,12 +91,7 @@ class HubGHZActiveApp(Protocol):
                 hub_name=self.owner.name
             )
             self.owner.send_message(sensor_name, msg)
-        
-        # agendar verificação única no fim da janela de entanglemento
-        process = Process(self, "should_process_joint_measurement", [])
-        event = Event(self.end_time, process)
-        self.owner.timeline.schedule(event)
-            
+
     def request_entanglement(self, sensor_name: str):
         """Requests entanglement with a specified sensor.
 
@@ -110,16 +121,11 @@ class HubGHZActiveApp(Protocol):
             self.to_register_memories(info.remote_node, info.state)
             log.logger.info(f"{self.owner.name} app registered entangled memory from {info.remote_node}.")
             # early trigger: if we already have enough entangled sensors, run now
-            if not self.completed:
-                entangled_memory_nodes = {mi.remote_node for mi in self.owner.resource_manager.memory_manager if mi.state == "ENTANGLED"}
-                ready_sensors = [
-                    s for s in self.sensors_to_monitor
-                    if self.memories_by_sensor.get(s, []).count("ENTANGLED") >= self.min_entangled_memories and s in entangled_memory_nodes
-                ]
-                if len(ready_sensors) >= self.required_qubits:
-                    log.logger.info(f"{self.owner.name} app has {len(ready_sensors)} ready sensors; triggering joint measurement early.")
-                    self.simulate_joint_measurement()
-            
+            if not self.completed and self.should_process_joint_measurement():
+                log.logger.info(f"{self.owner.name} app triggering joint measurement.")
+                self.simulate_joint_measurement()
+                self.completed = True
+
     def simulate_joint_measurement(self):
         """Aplica o circuito quântico customizado nas memórias emaranhadas e as mede."""
         # 1) Determina quantos qubits o circuito exige (máximo índice + 1)
@@ -228,9 +234,9 @@ class HubGHZActiveApp(Protocol):
     
     def should_process_joint_measurement(self):
         """Verifica se há recursos suficientes para executar a medição conjunta e o circuito."""
-        # Requisito mínimo ditado pelo circuito
         if self.completed:
-            return
+            return False
+
         required_qubits = self.required_qubits if getattr(self, "required_qubits", None) else self._compute_required_qubits()
 
         # Sensores com ENTANGLED suficientes (pelo tracking interno) E com memória entangled disponível no hub
@@ -242,11 +248,13 @@ class HubGHZActiveApp(Protocol):
         entangled_qubits_count = len(entangled_sensors)
 
         if entangled_qubits_count >= required_qubits:
-            log.logger.info(f"{self.owner.name} app processing joint measurement with custom circuit.")
-            self.simulate_joint_measurement()
+            log.logger.info(f"{self.owner.name} app has sufficient resources to process joint measurement.")
+            return True
         else:
             log.logger.warning(
-                f"{self.owner.name} app has only {entangled_qubits_count} entangled qubits; requires {required_qubits} to run the circuit.")
+                f"{self.owner.name} app has only {entangled_qubits_count} entangled qubits; requires {required_qubits} to run the circuit."
+            )
+            return False
 
     def _compute_required_qubits(self) -> int:
         rq = 1

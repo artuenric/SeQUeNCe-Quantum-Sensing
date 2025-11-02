@@ -10,7 +10,7 @@ if __name__ == "__main__":
     network_file = CONFIG['simulacao']['NETWORK_CONFIG_FILE']
     log_file_name = CONFIG['simulacao']['LOG_FILE_NAME']
     start_time = CONFIG['simulacao']['START_TIME']
-    end_time = CONFIG['simulacao']['END_TIME']
+    entanglement_window = CONFIG['simulacao']['ENTANGLEMENT_WINDOW']
 
     # 2. Configuração inicial da rede e do logger
     print(f"Carregando a topologia do arquivo: {network_file}")
@@ -38,7 +38,12 @@ if __name__ == "__main__":
         # Instala a App no Hub
         hub_node = node_map.get(hub_name)
         if hub_node:
-            app_hub = HubGHZActiveApp(hub_node, sensor_names, start_time, end_time)
+            app_hub = HubGHZActiveApp(
+                hub_node,
+                sensor_names,
+                start_time,
+                entanglement_window=entanglement_window
+            )
             hub_node.set_app(app_hub)
             all_hubs_apps.append(app_hub)
             print(f"  Aplicação instalada no hub: {hub_name}")
