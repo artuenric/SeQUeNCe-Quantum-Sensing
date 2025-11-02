@@ -13,7 +13,7 @@ CONFIG = {
         "NETWORK_CONFIG_FILE": "net.json",
         "LOG_FILE_NAME": "log",
         "START_TIME": 1e12,
-        "END_TIME": 3e12,
+        "ENTANGLEMENT_WINDOW": 2e12,
     },
     "hubs_config": [
         {

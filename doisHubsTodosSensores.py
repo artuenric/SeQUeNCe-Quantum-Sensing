@@ -30,7 +30,7 @@ CONFIG: Dict[str, object] = {
         "NETWORK_CONFIG_FILE": "net.json",
         "LOG_FILE_NAME": "log",
         "START_TIME": 1e12,
-        "END_TIME": 3e12,
+        "ENTANGLEMENT_WINDOW": 2e12,
     },
     "hubs_config": [
         {"name": "Hub1", "sensors": ["Sensor1H1", "Sensor2H1", "Sensor3H1", "Sensor4H1"]},
@@ -38,12 +38,12 @@ CONFIG: Dict[str, object] = {
         {"name": "Hub3", "sensors": ["Sensor1H3", "Sensor2H3", "Sensor3H3", "Sensor4H3"]},
     ],
     "hardware": {
-        "memoria": {"FREQ": 2e3, "EXPIRE": 0, "EFFICIENCY": 1, "FIDELITY": 0.93},
+        "memoria": {"FREQ": 2e3, "EXPIRE": 1, "EFFICIENCY": 1, "FIDELITY": 0.93},
         "swapping": {"SUCC_PROB": 0.64, "DEGRADATION": 0.99},
         "detector": {"EFFICIENCY": 0.9, "COUNT_RATE": 5e7, "RESOLUTION": 100},
         "canal_quantico": {"ATTENUATION": 0.0002},
     },
-    # Operações próprias deste cenário
+# Operações próprias deste cenário  
     "circuito_quantico": {
         "operacoes": [
             ("X", 0),
@@ -223,8 +223,8 @@ def main(hubs: Optional[List[str]] = None, seed: Optional[int] = None):
         hub1_node,
         [n.name for n in hub1_sensors],
         CONFIG["simulacao"]["START_TIME"],
-        CONFIG["simulacao"]["END_TIME"],
-        CONFIG["circuito_quantico"]["operacoes"],
+        entanglement_window=CONFIG["simulacao"]["ENTANGLEMENT_WINDOW"],
+        quantum_circuit_operations=CONFIG["circuito_quantico"]["operacoes"],
         append_ghz=True,
         ghz_topology="chain",
     )
@@ -234,8 +234,8 @@ def main(hubs: Optional[List[str]] = None, seed: Optional[int] = None):
         hub2_node,
         [n.name for n in hub2_sensors],
         CONFIG["simulacao"]["START_TIME"],
-        CONFIG["simulacao"]["END_TIME"],
-        CONFIG["circuito_quantico"]["operacoes"],
+        entanglement_window=CONFIG["simulacao"]["ENTANGLEMENT_WINDOW"],
+        quantum_circuit_operations=CONFIG["circuito_quantico"]["operacoes"],
         append_ghz=True,
         ghz_topology="chain",
     )
