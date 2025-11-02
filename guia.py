@@ -104,6 +104,7 @@ def main(hub_name: str = "Hub1", seed: Optional[int] = None):
     network_topo = RouterNetTopo(network_file)
     tl = network_topo.get_timeline()
     print("Topologia da rede carregada.")
+    entanglement_window = CONFIG["simulacao"]["ENTANGLEMENT_WINDOW"]
 
     # 2) Configura o logger
     if setup_logger is not None:
@@ -171,8 +172,8 @@ def main(hub_name: str = "Hub1", seed: Optional[int] = None):
     # Instala a App no Hub (informando os sensores selecionados)
     hub_app = HubGHZActiveApp(hub_node, selected_sensors,
                               CONFIG["simulacao"]["START_TIME"],
-                              CONFIG["simulacao"]["END_TIME"],
-                              CONFIG["circuito_quantico"]["operacoes"])
+                              entanglement_window=entanglement_window,
+                              quantum_circuit_operations=CONFIG["circuito_quantico"]["operacoes"])
     hub_node.set_app(hub_app)
     print(f"Aplicação instalada no Hub: {hub_node.name}")
 
