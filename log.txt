@@ -1,80 +1,236 @@
-0                    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
-0                    INFO    hub_ghz_active_app     Hub2 app circuit requires 4 qubits within a 2000000000000.0 time-unit entanglement window.
-0                    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
-0                    INFO    hub_ghz_active_app     Hub3 app circuit requires 4 qubits within a 2000000000000.0 time-unit entanglement window.
-0                    INFO    hub_ghz_active_app     Hub2 app starting active GHZ process.
-0                    INFO    hub_ghz_active_app     Hub3 app starting active GHZ process.
-200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor1H2
-200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor1H2.
-200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor2H2
-200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor2H2.
-200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor3H2
-200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor3H2.
-200,000,000          INFO    hub_ghz_active_app     Hub2 app received ACEPT_GHZ message from Sensor4H2
-200,000,000          INFO    hub_ghz_active_app     Hub2 app requested entanglement with Sensor4H2.
-200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor1H3
-200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor1H3.
-200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor2H3
-200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor2H3.
-200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor3H3
-200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor3H3.
-200,000,000          INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor4H3
-200,000,000          INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor4H3.
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor1H2 approved on node Hub2
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor2H2 approved on node Hub2
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor3H2 approved on node Hub2
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor4H2 approved on node Hub2
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor1H3 approved on node Hub3
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor2H3 approved on node Hub3
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor3H3 approved on node Hub3
-400,000,000          INFO    hub_ghz_active_app     Reservation for Sensor4H3 approved on node Hub3
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor2H2.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor3H2.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor1H2.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor4H2.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app has 4 ready sensors; triggering joint measurement early.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app checando fidelidade da memoria Hub2.MemoryArray[0] associada ao sensor Sensor1H2 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app checando fidelidade da memoria Hub2.MemoryArray[1] associada ao sensor Sensor2H2 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app checando fidelidade da memoria Hub2.MemoryArray[2] associada ao sensor Sensor3H2 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app checando fidelidade da memoria Hub2.MemoryArray[3] associada ao sensor Sensor4H2 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app sensores candidatos por fidelidade: ['Sensor1H2', 'Sensor2H2', 'Sensor3H2', 'Sensor4H2']
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app fidelidade da memória Hub2.MemoryArray[0] associada ao sensor Sensor1H2 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app fidelidade da memória Hub2.MemoryArray[1] associada ao sensor Sensor2H2 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app fidelidade da memória Hub2.MemoryArray[2] associada ao sensor Sensor3H2 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app fidelidade da memória Hub2.MemoryArray[3] associada ao sensor Sensor4H2 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app selected sensors for circuit (by fidelity): ['Sensor1H2', 'Sensor2H2', 'Sensor3H2', 'Sensor4H2']
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 0 with outcome 1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 1 with outcome 1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 2 with outcome 1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app measured qubit 3 with outcome 1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub2 app joint measurement with custom circuit completed. Outcomes: [1, 1, 1, 1]
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app has 4 ready sensors; triggering joint measurement early.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[0] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[1] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[2] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[3] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app sensores candidatos por fidelidade: ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[0] associada ao sensor Sensor1H3 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[1] associada ao sensor Sensor2H3 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[2] associada ao sensor Sensor3H3 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[3] associada ao sensor Sensor4H3 alta, adicionada ao circuito (f=0.9300).
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app selected sensors for circuit (by fidelity): ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 0 with outcome 0.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 1 with outcome 1.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 2 with outcome 0.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 3 with outcome 0.
-1,002,150,025,010    INFO    hub_ghz_active_app     Hub3 app joint measurement with custom circuit completed. Outcomes: [0, 1, 0, 0]
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor3H2.
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor4H2.
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor1H2.
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub2 app registered entangled memory from Sensor2H2.
-2,006,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+1,000,000,000,000    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
+1,000,000,000,000    INFO    hub_ghz_active_app     Hub3 app circuit requires 4 qubits within a 938466052936.1034 time-unit entanglement window.
+1,000,000,000,000    INFO    hub_ghz_active_app     Hub3 app starting active GHZ process.
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor1H3
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor1H3.
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor2H3
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor2H3.
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor3H3
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor3H3.
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor4H3
+1,000,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor4H3.
+1,000,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor1H3 approved on node Hub3
+1,000,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor2H3 approved on node Hub3
+1,000,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor3H3 approved on node Hub3
+1,000,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor4H3 approved on node Hub3
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
+1,052,150,025,010    WARNING hub_ghz_active_app     Hub3 app has only 1 entangled qubits; requires 4 to run the circuit.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+1,052,150,025,010    WARNING hub_ghz_active_app     Hub3 app has only 2 entangled qubits; requires 4 to run the circuit.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+1,052,150,025,010    WARNING hub_ghz_active_app     Hub3 app has only 3 entangled qubits; requires 4 to run the circuit.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app has sufficient resources to process joint measurement.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app triggering joint measurement.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[0] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[1] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[2] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[3] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app sensores candidatos por fidelidade: ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[0] associada ao sensor Sensor1H3 alta, adicionada ao circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[1] associada ao sensor Sensor2H3 alta, adicionada ao circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[2] associada ao sensor Sensor3H3 alta, adicionada ao circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[3] associada ao sensor Sensor4H3 alta, adicionada ao circuito (f=0.9300).
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app selected sensors for circuit (by fidelity): ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 0 with outcome 0.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 1 with outcome 1.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 2 with outcome 0.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 3 with outcome 0.
+1,052,150,025,010    INFO    hub_ghz_active_app     Hub3 app joint measurement with custom circuit completed. Outcomes: [0, 1, 0, 0]
+1,054,000,000,000    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
+1,054,000,000,000    INFO    hub_ghz_active_app     Hub1 app circuit requires 4 qubits within a 735025907816.8798 time-unit entanglement window.
+1,054,000,000,000    INFO    hub_ghz_active_app     Hub1 app starting active GHZ process.
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor1H1
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor1H1.
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor2H1
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor2H1.
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor3H1
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor3H1.
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app received ACEPT_GHZ message from Sensor4H1
+1,054,200,000,000    INFO    hub_ghz_active_app     Hub1 app requested entanglement with Sensor4H1.
+1,054,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor1H1 approved on node Hub1
+1,054,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor2H1 approved on node Hub1
+1,054,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor3H1 approved on node Hub1
+1,054,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor4H1 approved on node Hub1
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor3H1.
+1,106,150,025,010    WARNING hub_ghz_active_app     Hub1 app has only 1 entangled qubits; requires 4 to run the circuit.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor2H1.
+1,106,150,025,010    WARNING hub_ghz_active_app     Hub1 app has only 2 entangled qubits; requires 4 to run the circuit.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor4H1.
+1,106,150,025,010    WARNING hub_ghz_active_app     Hub1 app has only 3 entangled qubits; requires 4 to run the circuit.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app registered entangled memory from Sensor1H1.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app has sufficient resources to process joint measurement.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app triggering joint measurement.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app checando fidelidade da memoria Hub1.MemoryArray[0] associada ao sensor Sensor1H1 pra botar no circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app checando fidelidade da memoria Hub1.MemoryArray[1] associada ao sensor Sensor2H1 pra botar no circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app checando fidelidade da memoria Hub1.MemoryArray[2] associada ao sensor Sensor3H1 pra botar no circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app checando fidelidade da memoria Hub1.MemoryArray[3] associada ao sensor Sensor4H1 pra botar no circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app sensores candidatos por fidelidade: ['Sensor1H1', 'Sensor2H1', 'Sensor3H1', 'Sensor4H1']
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app fidelidade da memória Hub1.MemoryArray[0] associada ao sensor Sensor1H1 alta, adicionada ao circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app fidelidade da memória Hub1.MemoryArray[1] associada ao sensor Sensor2H1 alta, adicionada ao circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app fidelidade da memória Hub1.MemoryArray[2] associada ao sensor Sensor3H1 alta, adicionada ao circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app fidelidade da memória Hub1.MemoryArray[3] associada ao sensor Sensor4H1 alta, adicionada ao circuito (f=0.9300).
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app selected sensors for circuit (by fidelity): ['Sensor1H1', 'Sensor2H1', 'Sensor3H1', 'Sensor4H1']
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app measured qubit 0 with outcome 0.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app measured qubit 1 with outcome 0.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app measured qubit 2 with outcome 1.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app measured qubit 3 with outcome 0.
+1,106,150,025,010    INFO    hub_ghz_active_app     Hub1 app joint measurement with custom circuit completed. Outcomes: [0, 0, 1, 0]
+1,108,000,000,000    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
+1,108,000,000,000    INFO    hub_ghz_active_app     Hub3 app circuit requires 4 qubits within a 1778538159798.3525 time-unit entanglement window.
+1,108,000,000,000    INFO    hub_ghz_active_app     Hub3 app starting active GHZ process.
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor1H3
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor1H3.
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor2H3
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor2H3.
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor3H3
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor3H3.
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor4H3
+1,108,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor4H3.
+1,108,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor1H3 approved on node Hub3
+1,108,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor2H3 approved on node Hub3
+1,108,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor3H3 approved on node Hub3
+1,108,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor4H3 approved on node Hub3
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
+1,162,550,025,010    WARNING hub_ghz_active_app     Hub3 app has only 1 entangled qubits; requires 4 to run the circuit.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+1,162,550,025,010    WARNING hub_ghz_active_app     Hub3 app has only 2 entangled qubits; requires 4 to run the circuit.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+1,162,550,025,010    WARNING hub_ghz_active_app     Hub3 app has only 3 entangled qubits; requires 4 to run the circuit.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app has sufficient resources to process joint measurement.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app triggering joint measurement.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[0] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[1] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[2] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[3] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[4] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[5] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[6] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[7] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app sensores candidatos por fidelidade: ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[0] associada ao sensor Sensor1H3 alta, adicionada ao circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[1] associada ao sensor Sensor2H3 alta, adicionada ao circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[2] associada ao sensor Sensor3H3 alta, adicionada ao circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[3] associada ao sensor Sensor4H3 alta, adicionada ao circuito (f=0.9300).
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app selected sensors for circuit (by fidelity): ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 0 with outcome 0.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 1 with outcome 0.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 2 with outcome 1.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 3 with outcome 0.
+1,162,550,025,010    INFO    hub_ghz_active_app     Hub3 app joint measurement with custom circuit completed. Outcomes: [0, 0, 1, 0]
+1,164,000,000,000    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
+1,164,000,000,000    INFO    hub_ghz_active_app     Hub3 app circuit requires 4 qubits within a 1422309326679.2031 time-unit entanglement window.
+1,164,000,000,000    INFO    hub_ghz_active_app     Hub3 app starting active GHZ process.
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor1H3
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor1H3.
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor2H3
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor2H3.
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor3H3
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor3H3.
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor4H3
+1,164,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor4H3.
+1,164,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor1H3 approved on node Hub3
+1,164,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor2H3 approved on node Hub3
+1,164,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor3H3 approved on node Hub3
+1,164,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor4H3 approved on node Hub3
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
+1,214,950,025,010    WARNING hub_ghz_active_app     Hub3 app has only 1 entangled qubits; requires 4 to run the circuit.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+1,214,950,025,010    WARNING hub_ghz_active_app     Hub3 app has only 2 entangled qubits; requires 4 to run the circuit.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+1,214,950,025,010    WARNING hub_ghz_active_app     Hub3 app has only 3 entangled qubits; requires 4 to run the circuit.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app has sufficient resources to process joint measurement.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app triggering joint measurement.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[0] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[1] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[2] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[3] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[4] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[5] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[6] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[7] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[8] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[9] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[10] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[11] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app sensores candidatos por fidelidade: ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[0] associada ao sensor Sensor1H3 alta, adicionada ao circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[1] associada ao sensor Sensor2H3 alta, adicionada ao circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[2] associada ao sensor Sensor3H3 alta, adicionada ao circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[3] associada ao sensor Sensor4H3 alta, adicionada ao circuito (f=0.9300).
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app selected sensors for circuit (by fidelity): ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 0 with outcome 1.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 1 with outcome 0.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 2 with outcome 0.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 3 with outcome 1.
+1,214,950,025,010    INFO    hub_ghz_active_app     Hub3 app joint measurement with custom circuit completed. Outcomes: [1, 0, 0, 1]
+1,216,000,000,000    INFO    hub_ghz_active_app     Quantum circuit loaded with operations: [('X', 0), ('X', 1), ('X', 2), ('X', 3)]
+1,216,000,000,000    INFO    hub_ghz_active_app     Hub3 app circuit requires 4 qubits within a 1233987203882.6973 time-unit entanglement window.
+1,216,000,000,000    INFO    hub_ghz_active_app     Hub3 app starting active GHZ process.
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor1H3
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor1H3.
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor2H3
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor2H3.
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor3H3
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor3H3.
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app received ACEPT_GHZ message from Sensor4H3
+1,216,200,000,000    INFO    hub_ghz_active_app     Hub3 app requested entanglement with Sensor4H3.
+1,216,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor1H3 approved on node Hub3
+1,216,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor2H3 approved on node Hub3
+1,216,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor3H3 approved on node Hub3
+1,216,400,000,000    INFO    hub_ghz_active_app     Reservation for Sensor4H3 approved on node Hub3
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+1,268,150,025,010    WARNING hub_ghz_active_app     Hub3 app has only 1 entangled qubits; requires 4 to run the circuit.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+1,268,150,025,010    WARNING hub_ghz_active_app     Hub3 app has only 2 entangled qubits; requires 4 to run the circuit.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+1,268,150,025,010    WARNING hub_ghz_active_app     Hub3 app has only 3 entangled qubits; requires 4 to run the circuit.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app has sufficient resources to process joint measurement.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app triggering joint measurement.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[0] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[1] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[2] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[3] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[4] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[5] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[6] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[7] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[8] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[9] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[10] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[11] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[12] associada ao sensor Sensor1H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[13] associada ao sensor Sensor2H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[14] associada ao sensor Sensor3H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app checando fidelidade da memoria Hub3.MemoryArray[15] associada ao sensor Sensor4H3 pra botar no circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app sensores candidatos por fidelidade: ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[0] associada ao sensor Sensor1H3 alta, adicionada ao circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[1] associada ao sensor Sensor2H3 alta, adicionada ao circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[2] associada ao sensor Sensor3H3 alta, adicionada ao circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app fidelidade da memória Hub3.MemoryArray[3] associada ao sensor Sensor4H3 alta, adicionada ao circuito (f=0.9300).
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app selected sensors for circuit (by fidelity): ['Sensor1H3', 'Sensor2H3', 'Sensor3H3', 'Sensor4H3']
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app appended GHZ ops (chain): [('H', 0), ('CX', 0, 1), ('CX', 1, 2), ('CX', 2, 3)]
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 0 with outcome 0.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 1 with outcome 1.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 2 with outcome 0.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app measured qubit 3 with outcome 0.
+1,268,150,025,010    INFO    hub_ghz_active_app     Hub3 app joint measurement with custom circuit completed. Outcomes: [0, 1, 0, 0]
+2,167,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+2,167,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+2,167,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
+2,167,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+2,217,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+2,217,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+2,217,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+2,217,050,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
+2,268,450,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor2H3.
+2,268,450,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor1H3.
+2,268,450,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor3H3.
+2,268,450,025,010    INFO    hub_ghz_active_app     Hub3 app registered entangled memory from Sensor4H3.
