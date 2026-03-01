@@ -57,7 +57,12 @@ Thumbs.db
 
 
 # Arquivos de Segredos e Configurações Locais
-# NUNCA versione senhas, tokens de API ou chaves secretas!
 # --------------------------------------------------------------------------
 .env
 local_settings.py
+
+
+# Arquivos de dados
+# --------------------------------------------------------------------------
+*.csv
+*.txt
