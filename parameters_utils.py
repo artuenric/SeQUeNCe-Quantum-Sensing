@@ -9,8 +9,6 @@ from typing import Any, Dict, Optional
 
 from sequence.topology.router_net_topo import RouterNetTopo
 
-from config import CONFIG
-
 
 def _safe_get(d: Dict[str, Any], *keys: str) -> Any:
     """Recupera um valor aninhado usando .get() encadeado.
@@ -33,7 +31,9 @@ def set_parameters(topology: RouterNetTopo, config: Optional[Dict[str, Any]] = N
     Usa acesso seguro (.get) e só aplica parâmetros quando os valores
     existem (não-None), evitando erros quando uma chave faltar.
     """
-    cfg: Dict[str, Any] = CONFIG if config is None else config
+    if config is None:
+        raise ValueError("O parâmetro 'config' é obrigatório. Passe um dicionário de configuração.")
+    cfg: Dict[str, Any] = config
     hardware = cfg.get("hardware", {})
 
     # Memórias dos roteadores
