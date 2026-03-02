@@ -1,68 +1,132 @@
-# Simulação de Redes para Sensoriamento Quântico Distribuído
+# Sensoriamento Quântico Distribuído com Tolerância a Falhas
 
-Este projeto apresenta uma plataforma para simular redes quânticas aplicadas ao **sensoriamento distribuído**, utilizando a biblioteca **SeQUeNCe**. O objetivo principal é explorar e validar protocolos de comunicação que permitem a um conjunto de sensores quânticos, coordenados por um nó central (Hub), realizar medições com precisão aprimorada.
+Este projeto implementa um simulador de **redes quânticas para sensoriamento distribuído** utilizando a biblioteca **SeQUeNCe** (Simulator of QUantum Network Communication Environments). O objetivo é validar protocolos de comunicação que permitem a sensores quânticos, coordenados por um nó central (Hub), realizar medições com precisão aprimorada através de emaranhamento multipartite.
 
-Para alcançar sensibilidades além dos limites clássicos, muitos protocolos de sensoriamento quântico se baseiam na criação de estados emaranhados multipartites entre os sensores. Este repositório implementa, como uma primeira solução, um protocolo "ativo" onde um Hub orquestra a geração de um estado Greenberger-Horne-Zeilinger (GHZ) entre os nós sensores. O protocolo também inclui mecanismos de *fallback* para os casos em que o emaranhamento quântico não é bem-sucedido, garantindo a robustez da rede.
+## 🏛️ Arquitetura do Código (`qsn/`)
 
-## 🏛️ Arquitetura do Projeto
+A aplicação implementa um protocolo "GHZ Ativo" onde o Hub orquestra a criação de estados Greenberger-Horne-Zeilinger (GHZ) entre múltiplos sensores. A robustez é garantida por um **mecanismo automático de fallback**: se o emaranhamento quântico falha, os sensores transitam para um modo de medição clássica.
 
-A estrutura do projeto foi desenhada para separar as responsabilidades de forma clara, facilitando a manutenção, a escalabilidade e a adição de novos protocolos de sensoriamento no futuro.
+### Estrutura de pacotes
 
-  * **Configuração (`qsn/net.json`, `qsn/parameters.py`):** Define o cenário da simulação. Aqui, especificamos os componentes da rede (nós e suas conexões) e seus parâmetros físicos, como fidelidade e eficiência das memórias.
-  * **Lógica da Aplicação (`qsn/app/`):** Contém o "cérebro" da simulação. Atualmente, a implementação se concentra no protocolo `ghz_active`:
-      * `ghz_active/hub_ghz_active_app.py`: Aplicação proativa do Hub, que inicia e gerencia o protocolo de criação do estado GHZ.
-      * `ghz_active/sensor_ghz_active_app.py`: Aplicação reativa dos Sensores, que respondem às propostas do Hub e tentam o emaranhamento (Plano A).
-      * `ghz_active/sensor_ghz_active_fallback_app.py`: Aplicação de contingência (Plano B), ativada se o emaranhamento falhar. Realiza uma medição local e envia o resultado clássico ao Hub.
-      * `ghz_active/message_ghz_active.py`: Define o "idioma" da comunicação para o protocolo GHZ, com todos os tipos de mensagens trocadas entre os nós.
-  * **Ferramentas (`qsn/utils/`):** Módulos de suporte, como a configuração de logs para monitorar a execução da simulação.
-  * **Execução e Análise (`GUIA.ipynb`, `log.txt`):** Notebooks para guiar a execução e arquivos de log para analisar os resultados.
-
-A topologia da rede simulada consiste em 3 Hubs, cada um conectado a 4 Sensores, com conexões quânticas e clássicas entre eles, conforme definido em `qsn/net.json`.
-
-## 🚀 Como Executar a Simulação
-
-Existem duas maneiras principais de executar a simulação: através do script principal ou interativamente usando o notebook.
-
-### 1\. Execução Completa
-
-O script `sensorActiveNet.py` é o ponto de entrada principal para rodar a simulação completa. Ele carrega a configuração, instala as aplicações em todos os hubs e sensores, e executa o protocolo.
-
-Para executar, basta rodar o seguinte comando a partir da raiz do projeto:
-
-```bash
-python -m qsn.sensorActiveNet
+```
+qsn/
+├── app/
+│   └── ghz_active/
+│       ├── hub_ghz_active_app.py       # Hub: orquestra emaranhamento e medição conjunta
+│       ├── sensor_app.py               # Sensor: delegador de estado
+│       ├── message_ghz_active.py       # Definição de mensagens do protocolo
+│       ├── states/
+│       │   ├── sensor_state.py         # Classe base abstrata
+│       │   ├── normal_state.py         # Estado: aguardando emaranhamento
+│       │   └── fallback_state.py       # Estado: medição clássica (contingência)
+│       └── __init__.py
+└── utils/
+    ├── logging_setup.py                # Configurador de logs da simulação
+    ├── tracked_modules.py              # Módulos a rastrear em logs
+    └── __init__.py
 ```
 
-Ao final, os resultados detalhados da execução serão salvos no arquivo `log.txt`.
+### Componentes principais
 
-### 2\. Execução Interativa com o `GUIA.ipynb`
+#### **1. Hub (`hub_ghz_active_app.py`)**
+- Inicia proativamente o protocolo GHZ enviando `PROPOSE_GHZ` aos sensores
+- Gerencia reservas de emaranhamento quântico via SeQUeNCe Network Manager
+- Monitora fidelidade de memórias e seleciona os sensores de melhor qualidade
+- Realiza medições conjuntas quando suficientes sensores estão emaranhados
+- Detecta falhas e envia `ATTEMPT_FAILED` aos sensores degradados
 
-O notebook `GUIA.ipynb` oferece um ambiente interativo para entender e executar a simulação passo a passo. Ele permite:
+#### **2. Sensores com Máquina de Estados (`sensor_app.py`)**
+Implementa padrão de máquina de estados finita:
 
-  * Carregar a topologia e os parâmetros de forma controlada.
-  * Visualizar a estrutura lógica da rede.
-  * Executar um cenário focado, selecionando um Hub e um par aleatório de Sensores para testar o protocolo em menor escala.
+- **NormalState** (`normal_state.py`)
+  - Estado inicial
+  - Aguarda `PROPOSE_GHZ` do Hub
+  - Aceita participação no emaranhamento
+  - Transita para fallback ao receber `ATTEMPT_FAILED`
 
-Recomenda-se abrir o `GUIA.ipynb` em um ambiente como o Jupyter Lab ou VS Code para uma experiência mais rica.
+- **FallbackState** (`fallback_state.py`)
+  - Ativado automaticamente quando emaranhamento falha
+  - Realiza medição local clássica
+  - Envia resultado via `CLASSICAL_FALLBACK` ao Hub
+  - Garante entrega de dados mesmo em cenários hostis
 
-## 📝 Entendendo o Fluxo do Protocolo (Exemplo: GHZ Ativo)
+#### **3. Protocolo de Mensagens (`message_ghz_active.py`)**
+```
+PROPOSE_GHZ        → Hub → Sensores (inicia protocolo)
+ACEPT_GHZ          → Sensores → Hub (confirma participação)
+STATUS_UPDATE      → Sensores → Hub (notifica estado de memória)
+ATTEMPT_FAILED     → Hub → Sensores (emaranhamento impossível)
+CLASSICAL_FALLBACK → Sensores → Hub (resultado clássico)
+```
 
-O fluxo de comunicação do protocolo implementado pode ser observado no arquivo `log.txt`. As principais etapas são:
+#### **4. Logging (`logging_setup.py`)**
+Sistema de rastreamento modular que registra apenas módulos especificados, permitindo análise detalhada do fluxo de execução em `poc_fallback_log.txt`.
 
-1.  **Início:** O Hub inicia o processo enviando uma mensagem `PROPOSE_GHZ` para os sensores que monitora.
-2.  **Aceitação:** Os sensores respondem com uma mensagem `ACEPT_GHZ`, confirmando a participação.
-3.  **Requisição de Emaranhamento:** O Hub solicita formalmente o emaranhamento com os sensores que aceitaram.
-4.  **Confirmação:** Os nós trocam informações sobre a reserva de recursos para o emaranhamento.
-5.  **Atualização de Status:** Uma vez que o emaranhamento é bem-sucedido, os sensores notificam o Hub enviando o status `ENTANGLED`.
-6.  **Medição Conjunta:** Após o fim do tempo estipulado, se um número mínimo de sensores estiver emaranhado, o Hub realiza uma medição conjunta simulada.
-7.  **(Fallback)**: Se o emaranhamento com um sensor falhar, o Hub notifica o sensor com `ATTEMPT_FAILED`. O sensor então ativa sua aplicação de fallback, realiza uma medição local e envia um resultado clássico de volta.
+---
 
-## 🛠️ Configuração
+## 🧪 Prova de Conceito (PoC): Tolerância a Falhas
 
-Para modificar os parâmetros da simulação, edite o arquivo `qsn/parameters.py`. Nele, você pode ajustar:
+### O que demonstra
 
-  * Tempos de início e fim da simulação.
-  * A relação entre Hubs e Sensores.
-  * Parâmetros de hardware, como fidelidade da memória e eficiência dos detectores.
+A PoC comprova que o simulador sobrevive a falhas de coerência quântica através de transição automática para medição clássica. Um cenário controlado induz propositalmente uma falha num nó sensor e documenta as 5 fases da recuperação.
 
-Para alterar a topologia da rede (adicionar/remover nós ou conexões), modifique o arquivo `qsn/net.json`.
+### Cenário
+
+| Nó | Configuração | Resultado |
+|----|--------------|-|
+| **Sensor1** | Parâmetros ideais (0.0002 dB/km) | ✅ Emaranhamento sucesso |
+| **Sensor2** | Parâmetros ideais (0.0002 dB/km) | ✅ Emaranhamento sucesso |
+| **Sensor3** | Degradado (10 dB/km, 1ps coerência, 1% eff.) | ⚠️ Fallback clássico |
+
+### As 5 Fases (registadas em `poc_fallback_log.txt`)
+
+1. **Fase 1 - Configuração:** Topologia e parâmetros degradados inicializados
+2. **Fase 2 - Funcionamento Normal:** Hub coordena emaranhamento; Sensor1/Sensor2 bem-sucedidos
+3. **Fase 3 - Detecção de Falha:** Fim da janela; Sensor3 identificado como sem emaranhamento
+4. **Fase 4 - Fallback:** Sensor3 transita `NormalState → FallbackState`, envia resultado clássico
+5. **Fase 5 - Agregação:** Hub recolhe 2 resultados quânticos + 1 clássico = rede íntegra
+
+### Executar a PoC
+
+```bash
+.venv/bin/python poc_fallback.py --seed 42
+```
+
+Saída esperada:
+```
+Sensores c/ emaranhamento quantico : ['Sensor1', 'Sensor2']
+Sensores em fallback classico      : ['Sensor3']
+Medicao conjunta completada        : True
+Agregacao completa                 : True
+
+CONCLUSAO: A falha de coerencia em Sensor3 NAO causou a queda da rede.
+```
+
+---
+
+## 📖 Documentação Detalhada
+
+Para análise profunda da PoC, consulte: **`POC_Detalhado.ipynb`**
+
+Este notebook contém:
+- Explicação teórica de máquinas de estados
+- Dissecção linha-a-linha do código da PoC
+- Interpretação dos timestamps de log
+- Extensões possíveis (mais sensores, cenários diferentes)
+
+---
+
+## 🔧 Desenvolvimento Futuro
+
+- Suporte para múltiplos Hubs com agregação distribuída
+- Variação de parâmetros para análise de robustez
+- Integração com optimizadores de topologia
+- Novos protocolos além de GHZ (cluster states, etc.)
+
+---
+
+## 📚 Referências
+
+- **SeQUeNCe**: https://github.com/mit-quanta/sequence-docs
+- **GHZ States**: Greenberger, M. D.; Horne, M. A.; Zeilinger, A. (1989)
+- **Quantum Sensing**: Giovannetti, V.; Lloyd, S.; Maccone, L. (2011)
